@@ -1,1 +1,24 @@
-[]
+[
+  {
+    "id": "tgs_1792558819182_qv29",
+    "judul": "Tugas Report Text",
+    "deskripsi": "Silahkan kalian ketik hasil report text kalian yang bertema tentang Hewan Nusantara dalam tugas tersebut harus memuat: \n\n1. Introduction\n2. Phsyical Description and Comparing Male and Female\n3. Habitat and Diets\n4. Daily Habits\n5. Reproduction\n6. Comment (optional) \n\nfull dalam bahasa Inggris jangan diterjemahkan ke AI karena bapa menggunanak Ai traker",
+    "kelas_ids": [
+      "kls_1792558352845_n69e",
+      "kls_1792558360162_4fmk",
+      "kls_1792558366626_p7fe",
+      "kls_1792558418874_33yr",
+      "kls_1792558489483_15da",
+      "kls_1792558496398_3lds",
+      "kls_1792558503378_bhnj"
+    ],
+    "jenis_bukti": "teks",
+    "tgl_mulai": "2026-10-21T05:00:19.182Z",
+    "tenggat": "2026-11-08T05:00:00.000Z",
+    "nilai_max": 100,
+    "batas_karakter": 10000,
+    "status": "aktif",
+    "tahun_pelajaran": "2026/2027",
+    "created_at": "2026-10-21T05:00:19.182Z"
+  }
+]
