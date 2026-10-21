@@ -1,5 +1,14 @@
 [
   {
+    "id": "aud_1792558496400_vncx",
+    "timestamp": "2026-10-21T04:54:56.400Z",
+    "user": "admin",
+    "role": "admin",
+    "action": "ADD_KELAS",
+    "details": "Menambah kelas baru: IX-F",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)"
+  },
+  {
     "id": "aud_1792558489485_3q6b",
     "timestamp": "2026-10-21T04:54:49.485Z",
     "user": "admin",
