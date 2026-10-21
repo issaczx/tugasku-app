@@ -1,5 +1,23 @@
 [
   {
+    "id": "aud_1792559240200_tfe1",
+    "timestamp": "2026-10-21T05:07:20.200Z",
+    "user": "admin",
+    "role": "admin",
+    "action": "UPDATE_CONFIG",
+    "details": "Pembaruan identitas profil madrasah",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)"
+  },
+  {
+    "id": "aud_1792559166970_d5g9",
+    "timestamp": "2026-10-21T05:06:06.970Z",
+    "user": "admin",
+    "role": "admin",
+    "action": "GRADE_TASK",
+    "details": "Menilai tugas \"Tugas Report Text\" murid dummy: 90",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)"
+  },
+  {
     "id": "aud_1792559124204_ljf9",
     "timestamp": "2026-10-21T05:05:24.204Z",
     "user": "admin",
