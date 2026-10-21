@@ -1,5 +1,14 @@
 [
   {
+    "id": "aud_1792559802382_ev8a",
+    "timestamp": "2026-10-21T05:16:42.383Z",
+    "user": "123456",
+    "role": "murid",
+    "action": "LOGIN_SUCCESS",
+    "details": "Login berhasil: dummy (murid)",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)"
+  },
+  {
     "id": "aud_1792559322345_gurz",
     "timestamp": "2026-10-21T05:08:42.345Z",
     "user": "admin",
