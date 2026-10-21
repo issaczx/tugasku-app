@@ -3,11 +3,12 @@
     "id": "usr_admin_1792558176019",
     "nama": "Administrator Madrasah",
     "username": "admin",
-    "password_hash": "75f85b68130a34b1e5497b4afba74a3163703503a974a433cce9b1eb684560c1",
-    "salt": "083d1dd500fdd7b78d6bca245aacfaeb",
+    "password_hash": "66a9806d34ea9e610325708782bfb17400f29ca3a4a1ec3a309f6be3219bd1dc",
+    "salt": "63adc0055d2e4d1be78cbf063201e465",
     "role": "admin",
     "status": "aktif",
-    "created_at": "2026-10-21T04:49:36.019Z"
+    "created_at": "2026-10-21T04:49:36.019Z",
+    "updated_at": "2026-10-21T05:08:09.519Z"
   },
   {
     "id": "usr_1792558849492_lyt6",
