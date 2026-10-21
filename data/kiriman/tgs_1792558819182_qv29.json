@@ -10,7 +10,7 @@
     "gambar_list": [],
     "nilai": 90,
     "catatan_guru": "ok",
-    "status_publikasi": false,
+    "status_publikasi": true,
     "submitted_at": "2026-10-21T05:04:02.166Z",
     "graded_at": "2026-10-21T05:06:06.965Z"
   }
