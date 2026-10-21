@@ -1,0 +1,16 @@
+[
+  {
+    "id": "sub_1792559042166_tzic",
+    "tugas_id": "tgs_1792558819182_qv29",
+    "user_id": "usr_1792558849492_lyt6",
+    "user_nama": "dummy",
+    "kelas_id": "kls_1792558352845_n69e",
+    "jenis_bukti": "teks",
+    "teks": "test ",
+    "gambar_list": [],
+    "nilai": null,
+    "catatan_guru": "",
+    "status_publikasi": false,
+    "submitted_at": "2026-10-21T05:04:02.166Z"
+  }
+]
