@@ -1,5 +1,14 @@
 [
   {
+    "id": "aud_1792559289521_ytl1",
+    "timestamp": "2026-10-21T05:08:09.521Z",
+    "user": "admin",
+    "role": "admin",
+    "action": "UPDATE_STUDENT",
+    "details": "Memperbarui akun murid: Administrator Madrasah",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)"
+  },
+  {
     "id": "aud_1792559240200_tfe1",
     "timestamp": "2026-10-21T05:07:20.200Z",
     "user": "admin",
