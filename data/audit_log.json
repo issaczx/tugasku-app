@@ -1,5 +1,14 @@
 [
   {
+    "id": "aud_1792559850923_sdih",
+    "timestamp": "2026-10-21T05:17:30.923Z",
+    "user": "admin",
+    "role": "admin",
+    "action": "LOGIN_SUCCESS",
+    "details": "Login berhasil: Administrator Madrasah (admin)",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)"
+  },
+  {
     "id": "aud_1792559841511_dbsf",
     "timestamp": "2026-10-21T05:17:21.511Z",
     "user": "123456",
