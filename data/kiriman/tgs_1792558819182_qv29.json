@@ -8,9 +8,10 @@
     "jenis_bukti": "teks",
     "teks": "test ",
     "gambar_list": [],
-    "nilai": null,
-    "catatan_guru": "",
+    "nilai": 90,
+    "catatan_guru": "ok",
     "status_publikasi": false,
-    "submitted_at": "2026-10-21T05:04:02.166Z"
+    "submitted_at": "2026-10-21T05:04:02.166Z",
+    "graded_at": "2026-10-21T05:06:06.965Z"
   }
 ]
