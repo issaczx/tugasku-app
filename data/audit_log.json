@@ -1,5 +1,14 @@
 [
   {
+    "id": "aud_1792558897891_lzcd",
+    "timestamp": "2026-10-21T05:01:37.891Z",
+    "user": "admin",
+    "role": "admin",
+    "action": "LOGOUT",
+    "details": "Pengguna keluar: admin",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)"
+  },
+  {
     "id": "aud_1792558849493_udva",
     "timestamp": "2026-10-21T05:00:49.493Z",
     "user": "admin",
