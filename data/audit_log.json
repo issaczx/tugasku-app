@@ -1,5 +1,14 @@
 [
   {
+    "id": "aud_1792559042168_cj9v",
+    "timestamp": "2026-10-21T05:04:02.168Z",
+    "user": "123456",
+    "role": "murid",
+    "action": "SUBMIT_TUGAS",
+    "details": "Murid dummy mengumpulkan tugas \"Tugas Report Text\"",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)"
+  },
+  {
     "id": "aud_1792558946396_1jja",
     "timestamp": "2026-10-21T05:02:26.396Z",
     "user": "123456",
