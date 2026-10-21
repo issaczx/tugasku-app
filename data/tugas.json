@@ -17,9 +17,9 @@
     "tenggat": "2026-11-08T05:00:00.000Z",
     "nilai_max": 100,
     "batas_karakter": 10000,
-    "status": "dikunci",
+    "status": "aktif",
     "tahun_pelajaran": "2026/2027",
     "created_at": "2026-10-21T05:00:19.182Z",
-    "updated_at": "2026-10-21T05:34:03.662Z"
+    "updated_at": "2026-10-21T05:34:05.797Z"
   }
 ]
