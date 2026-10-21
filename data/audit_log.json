@@ -1,5 +1,14 @@
 [
   {
+    "id": "aud_1792559874984_hezd",
+    "timestamp": "2026-10-21T05:17:54.984Z",
+    "user": "admin",
+    "role": "admin",
+    "action": "PUBLISH_GRADES",
+    "details": "Mempublikasikan nilai 1 murid",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)"
+  },
+  {
     "id": "aud_1792559850923_sdih",
     "timestamp": "2026-10-21T05:17:30.923Z",
     "user": "admin",
