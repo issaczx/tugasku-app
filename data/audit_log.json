@@ -1,5 +1,23 @@
 [
   {
+    "id": "aud_1792559124204_ljf9",
+    "timestamp": "2026-10-21T05:05:24.204Z",
+    "user": "admin",
+    "role": "admin",
+    "action": "TOGGLE_LOCK_TUGAS",
+    "details": "Mengubah status tugas \"Tugas Report Text\" menjadi aktif",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)"
+  },
+  {
+    "id": "aud_1792559122878_74wx",
+    "timestamp": "2026-10-21T05:05:22.878Z",
+    "user": "admin",
+    "role": "admin",
+    "action": "TOGGLE_LOCK_TUGAS",
+    "details": "Mengubah status tugas \"Tugas Report Text\" menjadi dikunci",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)"
+  },
+  {
     "id": "aud_1792559076541_s8es",
     "timestamp": "2026-10-21T05:04:36.541Z",
     "user": "admin",
