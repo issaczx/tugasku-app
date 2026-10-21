@@ -1,5 +1,23 @@
 [
   {
+    "id": "aud_1792558819185_uzex",
+    "timestamp": "2026-10-21T05:00:19.185Z",
+    "user": "admin",
+    "role": "admin",
+    "action": "ADD_TUGAS",
+    "details": "Membuat instrumen tugas baru: \"Tugas Report Text\"",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)"
+  },
+  {
+    "id": "aud_1792558564578_6znu",
+    "timestamp": "2026-10-21T04:56:04.578Z",
+    "user": "admin",
+    "role": "admin",
+    "action": "ADD_KELAS",
+    "details": "Menambah kelas baru: IX-G",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)"
+  },
+  {
     "id": "aud_1792558557301_wk1z",
     "timestamp": "2026-10-21T04:55:57.301Z",
     "user": "admin",
