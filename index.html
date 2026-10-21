@@ -1,0 +1,1630 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TugasKu — Portal Pengumpulan & Penilaian Tugas Madrasah</title>
+  <meta name="description" content="Aplikasi pengumpulan tugas murid dan penilaian guru berbasis web responsif dengan integrasi backend langsung ke GitHub."/>
+
+  <!-- Google Fonts: Inter & Material Symbols Outlined -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#005c55",
+            "primary-container": "#0f766e",
+            "on-primary": "#ffffff",
+            "on-primary-container": "#a3faef",
+            "secondary": "#54615f",
+            "secondary-container": "#d7e5e2",
+            "on-secondary-container": "#5a6765",
+            "surface": "#faf8ff",
+            "surface-dim": "#d2d9f4",
+            "surface-bright": "#faf8ff",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-low": "#f2f3ff",
+            "surface-container": "#eaedff",
+            "surface-container-high": "#e2e7ff",
+            "surface-container-highest": "#dae2fd",
+            "on-surface": "#131b2e",
+            "on-surface-variant": "#3e4947",
+            "outline": "#6e7977",
+            "outline-variant": "#bdc9c6",
+            "error": "#ba1a1a",
+            "error-container": "#ffdad6",
+            "on-error-container": "#93000a",
+            "tertiary": "#005584",
+            "tertiary-container": "#136ea6",
+            "background": "#faf8ff"
+          },
+          fontFamily: {
+            sans: ["Inter", "sans-serif"]
+          },
+          spacing: {
+            "space-xs": "0.25rem",
+            "space-sm": "0.5rem",
+            "space-md": "1rem",
+            "space-lg": "1.5rem",
+            "space-xl": "2rem",
+            "gutter": "1.5rem",
+            "margin": "2rem"
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- SheetJS (XLSX) for Excel & CSV Import/Export -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/custom.css"/>
+</head>
+<body class="bg-surface font-sans text-on-surface antialiased min-h-screen flex flex-col selection:bg-primary-container selection:text-white">
+
+  <!-- =========================================================================
+       ADMIN SIDEBAR (Desktop >= 1024px)
+       ========================================================================= -->
+  <aside id="admin-sidebar" class="hidden fixed left-0 top-0 h-full w-64 bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex flex-col justify-between select-none">
+    <div class="flex flex-col">
+      <!-- Institutional Logo & Title -->
+      <div class="h-16 px-space-md flex items-center gap-space-sm bg-surface-container-lowest border-b border-surface-container-high/40">
+        <div class="w-9 h-9 rounded-lg bg-primary-container flex items-center justify-center text-on-primary">
+          <span class="material-symbols-outlined text-[20px]">account_balance</span>
+        </div>
+        <div class="flex flex-col min-w-0">
+          <span class="font-bold text-primary truncate leading-tight text-sm brand-madrasah-name">MTs Negeri 1 Model</span>
+          <span class="text-xs text-on-surface-variant truncate">Admin & Guru</span>
+        </div>
+      </div>
+
+      <!-- Navigation Section Title -->
+      <div class="px-space-md py-space-sm">
+        <p class="px-space-sm py-space-xs text-[11px] uppercase tracking-wider text-outline font-semibold">Menu Utama</p>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="px-space-sm flex flex-col gap-1">
+        <a href="#" data-admin-nav="admin-rekap" data-nav-view="admin-rekap" class="flex items-center gap-space-sm px-space-md py-2.5 rounded-xl bg-primary-container text-on-primary font-semibold text-sm shadow-sm transition-colors">
+          <span class="material-symbols-outlined text-lg leading-none">fact_check</span>
+          <span class="truncate">Rekap & Penilaian</span>
+        </a>
+        <a href="#" data-admin-nav="admin-master" data-nav-view="admin-master" class="flex items-center gap-space-sm px-space-md py-2.5 rounded-xl text-on-surface-variant font-medium text-sm hover:bg-surface-container-high hover:text-on-surface transition-colors">
+          <span class="material-symbols-outlined text-lg leading-none">group</span>
+          <span class="truncate">Master Data</span>
+        </a>
+        <a href="#" data-admin-nav="admin-tugas" data-nav-view="admin-tugas" class="flex items-center gap-space-sm px-space-md py-2.5 rounded-xl text-on-surface-variant font-medium text-sm hover:bg-surface-container-high hover:text-on-surface transition-colors">
+          <span class="material-symbols-outlined text-lg leading-none">assignment</span>
+          <span class="truncate">Kelola Tugas</span>
+        </a>
+        <a href="#" data-admin-nav="admin-settings" data-nav-view="admin-settings" class="flex items-center gap-space-sm px-space-md py-2.5 rounded-xl text-on-surface-variant font-medium text-sm hover:bg-surface-container-high hover:text-on-surface transition-colors">
+          <span class="material-symbols-outlined text-lg leading-none">settings</span>
+          <span class="truncate">Pengaturan & Backup</span>
+        </a>
+      </nav>
+    </div>
+
+    <!-- Bottom Sidebar Status & Logout -->
+    <div class="p-space-md flex flex-col gap-space-sm bg-surface-container-lowest border-t border-surface-container-high/40">
+      <div class="p-space-sm rounded-xl bg-surface-container-low flex flex-col gap-1 text-xs">
+        <div class="flex items-center justify-between">
+          <span class="text-on-surface-variant">Backend</span>
+          <span class="telemetry-server-badge inline-flex items-center gap-1 font-semibold text-primary">
+            <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>Direct GitHub
+          </span>
+        </div>
+        <div class="flex items-center justify-between text-outline">
+          <span>Status API</span>
+          <span class="telemetry-quota-badge font-semibold text-on-surface">Offline Ready</span>
+        </div>
+      </div>
+      <button type="button" class="btn-trigger-logout w-full flex items-center justify-center gap-space-sm px-space-md py-2 rounded-xl bg-surface-container text-error text-sm font-semibold hover:bg-error-container hover:text-on-error-container transition-colors">
+        <span class="material-symbols-outlined text-base leading-none">logout</span>
+        <span>Keluar</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- =========================================================================
+       ADMIN HEADER (Top Bar)
+       ========================================================================= -->
+  <header id="admin-header" class="hidden fixed top-0 left-0 lg:left-64 right-0 h-16 bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-30 flex items-center justify-between px-gutter border-b border-surface-container-high/40">
+    <div class="flex items-center gap-space-md min-w-0">
+      <!-- Mobile Drawer Toggle -->
+      <button type="button" class="lg:hidden p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high" onclick="document.getElementById('admin-sidebar').classList.toggle('hidden')">
+        <span class="material-symbols-outlined text-2xl">menu</span>
+      </button>
+      <div class="flex flex-col min-w-0">
+        <h1 class="text-sm font-bold text-on-surface tracking-tight truncate leading-tight brand-madrasah-name">MTs Negeri 1 Model</h1>
+        <p class="text-xs text-on-surface-variant truncate brand-academic-year">Tahun Ajaran 2026/2027 • Semester Ganjil</p>
+      </div>
+    </div>
+    
+    <div class="flex items-center gap-space-sm shrink-0">
+      <!-- Server Synchronized Pill -->
+      <div class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container text-xs font-semibold telemetry-server-badge">
+        <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+        <span class="truncate">GitHub Direct Backend</span>
+      </div>
+
+      <!-- Quick Sync Now Button -->
+      <button type="button" id="btn-sync-github-now" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-surface-container text-primary text-xs font-semibold hover:bg-surface-container-high transition-colors shadow-sm" onclick="app.handleSyncGitHubNow()" title="Sinkronkan Data ke/dari GitHub">
+        <span class="material-symbols-outlined text-base">sync</span>
+        <span class="hidden md:inline">Sinkron GitHub</span>
+      </button>
+
+      <!-- Profile Avatar -->
+      <div class="flex items-center gap-2 p-1 pl-2 rounded-xl bg-surface-container-low border border-surface-container-high/60 cursor-pointer" onclick="app.navigateTo('admin-settings')">
+        <div class="w-7 h-7 rounded-full bg-primary flex items-center justify-center text-white text-xs font-bold">
+          A
+        </div>
+        <span class="text-xs font-semibold text-on-surface hidden md:inline">Administrator</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       STUDENT HEADER (Top Bar)
+       ========================================================================= -->
+  <header id="student-header" class="hidden fixed top-0 left-0 right-0 h-16 bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-30 flex items-center justify-between px-gutter border-b border-surface-container-high/40">
+    <div class="flex items-center gap-space-sm">
+      <div class="w-9 h-9 rounded-lg bg-primary-container flex items-center justify-center text-on-primary font-bold">
+        <span class="material-symbols-outlined text-[20px]">school</span>
+      </div>
+      <div class="flex flex-col">
+        <span class="font-bold text-primary tracking-tight leading-none text-sm brand-madrasah-name">MTs Negeri 1 Model</span>
+        <span class="text-[11px] text-on-surface-variant font-medium">Portal Murid • TugasKu</span>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-space-sm">
+      <div class="flex items-center gap-2 text-xs font-medium text-on-surface-variant px-2.5 py-1 rounded-full bg-secondary-container/40">
+        <span class="material-symbols-outlined text-primary text-sm">verified_user</span>
+        <span id="student-greeting-class" class="font-semibold text-primary">Murid</span>
+      </div>
+      <button type="button" class="btn-trigger-logout p-1.5 rounded-lg text-error hover:bg-error-container transition-colors" title="Keluar">
+        <span class="material-symbols-outlined text-xl">logout</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       STUDENT BOTTOM NAVIGATION (Mobile / Touch <= 768px)
+       ========================================================================= -->
+  <nav id="student-bottom-nav" class="hidden fixed bottom-0 left-0 right-0 h-16 bg-surface-container-lowest/95 backdrop-blur-md shadow-[0_-1px_8px_rgba(0,0,0,0.05)] border-t border-surface-container-high z-30 flex items-center justify-around px-2">
+    <button type="button" data-student-nav="student-dashboard" data-nav-view="student-dashboard" class="flex flex-col items-center justify-center gap-1 text-xs text-secondary hover:text-primary transition-colors flex-1 py-1">
+      <span class="material-symbols-outlined text-xl">dashboard</span>
+      <span>Beranda</span>
+    </button>
+    <button type="button" data-student-nav="student-submit" data-nav-view="student-submit" class="flex flex-col items-center justify-center gap-1 text-xs text-secondary hover:text-primary transition-colors flex-1 py-1">
+      <span class="material-symbols-outlined text-xl">upload_file</span>
+      <span>Kerjakan</span>
+    </button>
+    <button type="button" data-student-nav="student-rekap" data-nav-view="student-rekap" class="flex flex-col items-center justify-center gap-1 text-xs text-secondary hover:text-primary transition-colors flex-1 py-1">
+      <span class="material-symbols-outlined text-xl">checklist</span>
+      <span>Rekap Nilai</span>
+    </button>
+    <button type="button" data-student-nav="student-settings" data-nav-view="student-settings" class="flex flex-col items-center justify-center gap-1 text-xs text-secondary hover:text-primary transition-colors flex-1 py-1">
+      <span class="material-symbols-outlined text-xl">manage_accounts</span>
+      <span>Pengaturan</span>
+    </button>
+  </nav>
+
+  <!-- =========================================================================
+       MAIN CONTENT CONTAINER
+       ========================================================================= -->
+  <main id="main-layout" class="w-full min-h-screen bg-background flex-1 flex flex-col">
+
+    <!-- Security Reminder Banner for Default Admin Password (RPD 4.3) -->
+    <div id="admin-default-pass-banner" class="hidden bg-amber-500 text-white px-gutter py-2.5 flex items-center justify-between text-xs sm:text-sm font-medium shadow-sm z-20">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-base">warning</span>
+        <span><strong>Peringatan Keamanan:</strong> Akun Administrator masih menggunakan kata sandi bawaan ("123456"). Harap segera ubah kata sandi di Pengaturan demi keamanan data madrasah.</span>
+      </div>
+      <button type="button" class="underline hover:text-amber-100 font-bold shrink-0 ml-4" onclick="app.navigateTo('admin-settings')">
+        Ubah Sandi Sekarang &rarr;
+      </button>
+    </div>
+
+    <!-- =======================================================================
+         VIEW: 1. HALAMAN LOGIN BERSAMA (Admin & Murid)
+         Adapted directly from Stitch template
+         ======================================================================= -->
+    <div id="view-login" class="app-view flex-1 flex flex-col justify-center">
+      <!-- Fixed Login Header -->
+      <header class="fixed top-0 left-0 right-0 z-30 bg-surface-container-lowest/90 backdrop-blur-md shadow-sm border-b border-surface-container-high/40">
+        <div class="h-16 w-full px-gutter flex items-center justify-between max-w-7xl mx-auto">
+          <div class="flex items-center gap-space-sm">
+            <div class="w-9 h-9 rounded-lg bg-primary-container flex items-center justify-center text-on-primary text-base font-bold">
+              <span class="material-symbols-outlined text-[20px]">account_balance</span>
+            </div>
+            <div class="flex flex-col">
+              <span class="font-bold text-primary tracking-tight leading-none text-sm sm:text-base brand-madrasah-name">MTs Negeri 1 Model</span>
+              <span class="text-xs text-on-surface-variant leading-tight hidden sm:inline-block brand-madrasah-sub">Sistem Pembelajaran & Penilaian Digital Terpadu</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-space-md">
+            <div class="flex items-center gap-1 text-secondary text-xs bg-secondary-container/40 px-space-sm py-1 rounded-full">
+              <span class="material-symbols-outlined text-primary text-[16px]">verified_user</span>
+              <span class="hidden md:inline">Portal Otentikasi Terpadu</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Login Body -->
+      <div class="w-full max-w-7xl mx-auto px-4 sm:px-gutter py-24 my-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg lg:gap-space-xl items-stretch">
+          
+          <!-- Panel Kiri: Identitas & Nilai Madrasah -->
+          <section class="lg:col-span-6 xl:col-span-7 flex flex-col justify-between bg-surface-container-lowest rounded-2xl p-space-lg lg:p-space-xl shadow-sm border border-surface-container-high/60 relative overflow-hidden">
+            <div class="absolute -top-24 -left-24 w-72 h-72 rounded-full bg-secondary-container/30 blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-20 right-0 w-80 h-80 rounded-full bg-primary-container/10 blur-2xl pointer-events-none"></div>
+            
+            <div class="relative z-10 flex flex-col gap-space-md">
+              <div class="flex items-center gap-space-sm">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-low text-xs font-semibold text-primary tracking-wide uppercase">
+                  <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                  Pusat Otentikasi v2.0
+                </span>
+                <span class="text-xs text-outline hidden sm:inline">• Direct GitHub Backend</span>
+              </div>
+
+              <div class="flex flex-col gap-1 max-w-2xl">
+                <h2 class="text-2xl sm:text-3xl font-bold text-on-surface tracking-tight leading-tight">
+                  Gerbang Evaluasi & Portofolio Tugas Murid Madrasah
+                </h2>
+                <p class="text-sm text-secondary leading-relaxed pt-1">
+                  Mewujudkan tata kelola pengumpulan tugas yang objektif, transparan, dan hemat kuota data dengan penyimpanan terdistribusi di repositori GitHub privat.
+                </p>
+              </div>
+
+              <!-- 3 Keunggulan Sistem -->
+              <div class="grid grid-cols-1 gap-2.5 mt-2">
+                <div class="flex items-start gap-3 p-3 rounded-xl bg-surface-container-low/70 transition-all hover:bg-surface-container-low">
+                  <div class="w-10 h-10 rounded-lg bg-surface-container-lowest flex items-center justify-center text-primary shadow-sm shrink-0">
+                    <span class="material-symbols-outlined text-[20px]">perm_media</span>
+                  </div>
+                  <div class="flex flex-col">
+                    <h3 class="text-sm font-semibold text-on-surface">Kompresi WebP Otomatis & Hemat Kuota</h3>
+                    <p class="text-xs text-secondary leading-relaxed">Pengumpulan tugas foto murid dikompresi otomatis di sisi browser hingga &le; 2MB tanpa mengurangi ketajaman tulisan.</p>
+                  </div>
+                </div>
+
+                <div class="flex items-start gap-3 p-3 rounded-xl bg-surface-container-low/70 transition-all hover:bg-surface-container-low">
+                  <div class="w-10 h-10 rounded-lg bg-surface-container-lowest flex items-center justify-center text-primary shadow-sm shrink-0">
+                    <span class="material-symbols-outlined text-[20px]">assignment_turned_in</span>
+                  </div>
+                  <div class="flex flex-col">
+                    <h3 class="text-sm font-semibold text-on-surface">Penilaian Objektif & Publikasi Terkontrol</h3>
+                    <p class="text-xs text-secondary leading-relaxed">Nilai dan catatan bimbingan guru hanya terlihat oleh murid setelah dinyatakan resmi dipublikasikan oleh guru.</p>
+                  </div>
+                </div>
+
+                <div class="flex items-start gap-3 p-3 rounded-xl bg-surface-container-low/70 transition-all hover:bg-surface-container-low">
+                  <div class="w-10 h-10 rounded-lg bg-surface-container-lowest flex items-center justify-center text-primary shadow-sm shrink-0">
+                    <span class="material-symbols-outlined text-[20px]">lock</span>
+                  </div>
+                  <div class="flex flex-col">
+                    <h3 class="text-sm font-semibold text-on-surface">Anti Data Ganda & Proteksi Brute-Force</h3>
+                    <p class="text-xs text-secondary leading-relaxed">1 kiriman per murid per tugas, enkripsi sandi PBKDF2/SHA-256 + salt, serta proteksi penguncian 5 kali salah.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Footer Telemetry -->
+            <div class="relative z-10 pt-4 mt-4 border-t border-surface-container-high/60 flex items-center justify-between text-xs text-outline">
+              <span class="inline-flex items-center gap-1.5 text-primary font-semibold">
+                <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                Sistem Siap Operasional
+              </span>
+              <span>Kemenag Siber Standar</span>
+            </div>
+          </section>
+
+          <!-- Panel Kanan: Kartu Login Satu Pintu (RPD 3.1) -->
+          <section class="lg:col-span-6 xl:col-span-5 flex flex-col justify-center">
+            <div class="bg-surface-container-lowest rounded-2xl p-space-lg lg:p-space-xl shadow-md border border-surface-container-high/60 flex flex-col gap-space-md relative">
+              <div class="flex flex-col gap-1">
+                <span class="text-xs font-bold text-primary uppercase tracking-wider">Single Entry Gate</span>
+                <h3 class="text-xl font-bold text-on-surface">Masuk ke TugasKu</h3>
+                <p class="text-xs text-secondary">Gunakan Username / NISN dan kata sandi yang telah didaftarkan.</p>
+              </div>
+
+              <!-- Generic Error Alert (RPD 3.1) -->
+              <div id="login-error-box" class="hidden p-3 rounded-xl bg-error-container text-on-error-container text-xs font-semibold flex items-center gap-2">
+                <span class="material-symbols-outlined text-base">error</span>
+                <span id="login-error-text">Username atau kata sandi salah.</span>
+              </div>
+
+              <!-- Lockout Timer Alert (RPD 3.1) -->
+              <div id="login-lockout-box" class="hidden p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs font-medium flex items-center gap-2">
+                <span class="material-symbols-outlined text-base text-amber-600">lock_clock</span>
+                <span>Terlalu banyak percobaan gagal. Silakan tunggu 5 menit.</span>
+              </div>
+
+              <!-- Form -->
+              <form id="login-form" class="flex flex-col gap-space-md" onsubmit="app.handleLoginSubmit(event)">
+                <div class="flex flex-col gap-1.5">
+                  <label for="login-username" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">
+                    Username / NISN
+                  </label>
+                  <div class="relative">
+                    <span class="material-symbols-outlined absolute left-3 top-3 text-outline text-lg pointer-events-none">person</span>
+                    <input type="text" id="login-username" class="w-full h-11 pl-10 pr-3 rounded-xl bg-surface-container-low text-on-surface text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:bg-white border border-surface-container-high transition-all" placeholder="Masukkan username atau NISN" required autocomplete="username"/>
+                  </div>
+                </div>
+
+                <div class="flex flex-col gap-1.5">
+                  <label for="login-password" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">
+                    Kata Sandi
+                  </label>
+                  <div class="relative">
+                    <span class="material-symbols-outlined absolute left-3 top-3 text-outline text-lg pointer-events-none">lock</span>
+                    <input type="password" id="login-password" class="w-full h-11 pl-10 pr-10 rounded-xl bg-surface-container-low text-on-surface text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:bg-white border border-surface-container-high transition-all" placeholder="Masukkan kata sandi" required autocomplete="current-password"/>
+                    <button type="button" class="absolute right-3 top-3 text-outline hover:text-on-surface transition-colors" onclick="const p = document.getElementById('login-password'); p.type = p.type === 'password' ? 'text' : 'password';" title="Tampilkan/Sembunyikan Sandi">
+                      <span class="material-symbols-outlined text-lg">visibility</span>
+                    </button>
+                  </div>
+                </div>
+
+                <button type="submit" id="login-submit-btn" class="w-full h-11 mt-2 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-bold text-sm transition-all shadow-md active:scale-95 flex items-center justify-center gap-2">
+                  <span>Masuk ke Akun</span>
+                  <span class="material-symbols-outlined text-base">login</span>
+                </button>
+              </form>
+
+              <div class="pt-2 text-center text-xs text-outline">
+                Sistem Penilaian Terpadu • TugasKu v2.0
+              </div>
+            </div>
+          </section>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- =======================================================================
+         VIEW: 2. ADMIN - REKAP & PENILAIAN TUGAS (RPD Section 3.3 c)
+         ======================================================================= -->
+    <div id="view-admin-rekap" class="app-view hidden w-full px-gutter py-margin flex flex-col gap-space-lg">
+      
+      <!-- Top Utility Controls (Class & Task Selector) -->
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md bg-surface-container-lowest p-space-md rounded-2xl shadow-sm border border-surface-container-high/60">
+        <div class="flex flex-col sm:flex-row sm:items-center gap-space-md flex-1 min-w-0">
+          <!-- Selector Kelas -->
+          <div class="flex flex-col gap-1 min-w-[200px]">
+            <label class="text-[11px] font-bold text-outline uppercase tracking-wider flex items-center gap-1" for="rekap-select-kelas">
+              <span class="material-symbols-outlined text-sm text-primary">groups</span>
+              Pilih Rombel / Kelas
+            </label>
+            <div class="relative">
+              <select id="rekap-select-kelas" class="w-full bg-surface-container-low text-on-surface font-semibold text-sm px-3 py-2 pr-8 rounded-xl appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/40 border border-surface-container-high">
+              </select>
+              <span class="material-symbols-outlined absolute right-2.5 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none text-lg">expand_more</span>
+            </div>
+          </div>
+
+          <!-- Selector Tugas -->
+          <div class="flex flex-col gap-1 flex-1 min-w-[280px]">
+            <label class="text-[11px] font-bold text-outline uppercase tracking-wider flex items-center gap-1" for="rekap-select-tugas">
+              <span class="material-symbols-outlined text-sm text-primary">menu_book</span>
+              Pilih Instrumen Tugas
+            </label>
+            <div class="relative">
+              <select id="rekap-select-tugas" class="w-full bg-surface-container-low text-on-surface font-semibold text-sm px-3 py-2 pr-8 rounded-xl appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/40 border border-surface-container-high">
+              </select>
+              <span class="material-symbols-outlined absolute right-2.5 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none text-lg">expand_more</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-wrap items-center gap-2 pt-2 lg:pt-0">
+          <button type="button" id="btn-lock-toggle" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-container text-on-surface hover:bg-surface-container-high transition-colors font-semibold text-xs">
+            <span class="material-symbols-outlined text-base" id="lock-icon">lock_open</span>
+            <span id="lock-text">Kunci Tugas</span>
+          </button>
+          <button type="button" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-container text-primary hover:bg-surface-container-high transition-colors font-semibold text-xs" onclick="const task = window.storageManager.getTugasById(app.selectedTaskId); const cls = window.storageManager.getKelasById(app.selectedClassId); const sts = window.storageManager.getUsers('murid').filter(u => u.kelas_id === app.selectedClassId); window.XlsxHelper.downloadGradeTemplate(task, cls, sts);" title="Unduh format template Excel untuk penilaian">
+            <span class="material-symbols-outlined text-base">file_download</span>
+            <span>Template Nilai</span>
+          </button>
+          <button type="button" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-primary text-on-primary hover:bg-primary-container transition-all shadow-sm font-semibold text-xs" onclick="const task = window.storageManager.getTugasById(app.selectedTaskId); const cls = window.storageManager.getKelasById(app.selectedClassId); const subs = window.storageManager.memoryCache.kirimanMap.get(app.selectedTaskId) || []; const sts = window.storageManager.getUsers('murid').filter(u => u.kelas_id === app.selectedClassId); window.XlsxHelper.exportGrades(task, cls, subs, sts, window.storageManager.getConfig());">
+            <span class="material-symbols-outlined text-base">download</span>
+            <span>Export Nilai (XLSX)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Bento Stat Summary Cards (RPD 3.3 c) -->
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-space-sm sm:gap-space-md">
+        <div class="p-4 rounded-2xl bg-surface-container-lowest shadow-sm border border-surface-container-high/60 flex flex-col justify-between">
+          <div class="flex items-center justify-between text-on-surface-variant">
+            <span class="text-[11px] uppercase font-bold tracking-wider text-outline">Total Murid</span>
+            <span class="material-symbols-outlined text-primary text-lg">school</span>
+          </div>
+          <div class="mt-2 flex items-baseline gap-1">
+            <span id="metric-rekap-total" class="text-2xl font-bold text-on-surface tabular-nums">0</span>
+            <span class="text-xs text-outline font-normal">Siswa</span>
+          </div>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-surface-container-lowest shadow-sm border border-surface-container-high/60 flex flex-col justify-between">
+          <div class="flex items-center justify-between text-on-surface-variant">
+            <span class="text-[11px] uppercase font-bold tracking-wider text-outline">Sudah Terkirim</span>
+            <span class="material-symbols-outlined text-sky-600 text-lg">task_alt</span>
+          </div>
+          <div class="mt-2 flex items-baseline gap-1">
+            <span id="metric-rekap-terkirim" class="text-2xl font-bold text-sky-700 tabular-nums">0</span>
+            <span class="text-xs text-outline font-normal">Murid</span>
+          </div>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-surface-container-lowest shadow-sm border border-surface-container-high/60 flex flex-col justify-between">
+          <div class="flex items-center justify-between text-on-surface-variant">
+            <span class="text-[11px] uppercase font-bold tracking-wider text-outline">Menunggu Nilai</span>
+            <span class="material-symbols-outlined text-amber-600 text-lg">pending_actions</span>
+          </div>
+          <div class="mt-2 flex items-baseline gap-1">
+            <span id="metric-rekap-pending" class="text-2xl font-bold text-amber-700 tabular-nums">0</span>
+            <span class="text-xs text-outline font-normal">Murid</span>
+          </div>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-surface-container-lowest shadow-sm border border-surface-container-high/60 flex flex-col justify-between">
+          <div class="flex items-center justify-between text-on-surface-variant">
+            <span class="text-[11px] uppercase font-bold tracking-wider text-outline">Sudah Dinilai</span>
+            <span class="material-symbols-outlined text-emerald-600 text-lg">verified</span>
+          </div>
+          <div class="mt-2 flex items-baseline gap-1">
+            <span id="metric-rekap-dinilai" class="text-2xl font-bold text-emerald-700 tabular-nums">0</span>
+            <span class="text-xs text-outline font-normal">Murid</span>
+          </div>
+        </div>
+
+        <div class="col-span-2 md:col-span-1 p-4 rounded-2xl bg-surface-container-lowest shadow-sm border border-surface-container-high/60 flex flex-col justify-between">
+          <div class="flex items-center justify-between text-on-surface-variant">
+            <span class="text-[11px] uppercase font-bold tracking-wider text-outline">Rerata Nilai</span>
+            <span class="material-symbols-outlined text-primary text-lg">analytics</span>
+          </div>
+          <div class="mt-2 flex items-baseline gap-1">
+            <span id="metric-rekap-rerata" class="text-2xl font-bold text-primary tabular-nums">0</span>
+            <span class="text-xs text-outline font-normal">Poin</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bulk Action Bar for Grading (RPD 4.2) -->
+      <div id="rekap-bulk-bar" class="hidden p-3 rounded-2xl bg-surface-container text-on-surface flex flex-wrap items-center justify-between gap-3 shadow-md border border-primary/20 animate-fadeIn">
+        <div class="flex items-center gap-2 text-xs font-bold text-primary">
+          <span class="material-symbols-outlined text-base">checklist</span>
+          <span id="rekap-selected-count">0 Murid Dipilih</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button type="button" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary text-white text-xs font-semibold hover:bg-primary-container shadow-sm" onclick="app.handleBulkPublish(true)">
+            <span class="material-symbols-outlined text-sm">visibility</span>
+            <span>Publikasikan Nilai</span>
+          </button>
+          <button type="button" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-surface-container-high text-on-surface text-xs font-semibold hover:bg-surface-container-highest" onclick="app.handleBulkPublish(false)">
+            <span class="material-symbols-outlined text-sm">visibility_off</span>
+            <span>Batal Publikasi</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Rekap Table -->
+      <div class="bg-surface-container-lowest rounded-2xl shadow-sm border border-surface-container-high/60 overflow-hidden flex flex-col">
+        <div class="p-4 border-b border-surface-container-high/60 flex flex-wrap items-center justify-between gap-2">
+          <div class="flex items-center gap-2">
+            <h3 class="text-sm font-bold text-on-surface">Daftar Kiriman & Penilaian Murid</h3>
+            <button type="button" class="text-xs text-primary underline font-semibold ml-2" onclick="app.handlePublishAllClass(true)">
+              Publikasikan Seluruh Kelas
+            </button>
+            <span class="text-outline text-xs">•</span>
+            <button type="button" class="text-xs text-outline underline font-medium" onclick="app.handlePublishAllClass(false)">
+              Batal Publikasi Seluruh Kelas
+            </button>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto custom-scrollbar">
+          <table class="w-full text-left border-collapse text-xs sm:text-sm">
+            <thead>
+              <tr class="bg-surface-container-low text-outline text-[11px] uppercase tracking-wider font-semibold border-b border-surface-container-high">
+                <th class="p-3 text-center w-10">
+                  <input type="checkbox" class="rounded text-primary focus:ring-primary w-4 h-4 cursor-pointer" onchange="app.toggleSelectAllGrading(this)">
+                </th>
+                <th class="p-3 text-center w-12">No</th>
+                <th class="p-3">Nama Lengkap & NISN</th>
+                <th class="p-3">Status</th>
+                <th class="p-3">Waktu Kirim</th>
+                <th class="p-3 text-center">Nilai</th>
+                <th class="p-3 text-center">Publikasi</th>
+                <th class="p-3 text-right">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="rekap-table-body">
+              <!-- Dynamically rendered -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Empty state placeholder -->
+        <div id="rekap-empty-state" class="hidden p-12 text-center flex flex-col items-center justify-center gap-2">
+          <span class="material-symbols-outlined text-4xl text-outline">fact_check</span>
+          <span class="font-bold text-on-surface text-sm">Tidak ada instrumen tugas yang dipilih</span>
+          <p class="text-xs text-outline">Pilih rombel dan instrumen tugas pada menu dropdown di atas.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- =======================================================================
+         VIEW: 3. ADMIN - MASTER DATA (KELAS & AKUN MURID) (RPD Section 3.3 a)
+         ======================================================================= -->
+    <div id="view-admin-master" class="app-view hidden w-full px-gutter py-margin flex flex-col gap-space-lg">
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
+        <div class="flex flex-col">
+          <h2 class="text-xl sm:text-2xl font-bold text-on-surface tracking-tight">Master Data Rombel & Murid</h2>
+          <p class="text-xs text-on-surface-variant mt-0.5">Kelola rombongan belajar, data induk akun murid, mutasi kelas, dan import/export Excel.</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <button type="button" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface text-xs font-semibold shadow-sm transition-colors" onclick="window.XlsxHelper.exportStudents(window.storageManager.getUsers('murid'), window.storageManager.getKelas(), window.storageManager.getConfig().nama_madrasah)">
+            <span class="material-symbols-outlined text-base">file_download</span>
+            <span>Export Akun (XLSX)</span>
+          </button>
+          <button type="button" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-container hover:bg-surface-container-high text-primary text-xs font-semibold shadow-sm transition-colors" onclick="app.openImportModal()">
+            <span class="material-symbols-outlined text-base">upload_file</span>
+            <span>Import Akun (XLSX)</span>
+          </button>
+          <button type="button" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface text-xs font-semibold shadow-sm transition-colors" onclick="app.openAddClassModal()">
+            <span class="material-symbols-outlined text-base">add_home_work</span>
+            <span>Tambah Kelas</span>
+          </button>
+          <button type="button" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary hover:bg-primary-container text-on-primary text-xs font-bold shadow-md transition-all active:scale-95" onclick="app.openAddStudentModal()">
+            <span class="material-symbols-outlined text-base">person_add</span>
+            <span>Tambah Murid</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Two Tabs: Kelas vs Akun Murid -->
+      <div class="flex flex-col gap-4">
+        <!-- Rombel (Kelas) Section -->
+        <div class="bg-surface-container-lowest rounded-2xl p-space-md shadow-sm border border-surface-container-high/60 flex flex-col gap-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary">meeting_room</span>
+              <h3 class="text-sm font-bold text-on-surface">Data Rombongan Belajar (Kelas)</h3>
+              <span id="master-kelas-total-count" class="text-xs px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-semibold">0 Rombel</span>
+            </div>
+            <button type="button" class="text-xs text-primary font-bold hover:underline" onclick="app.openAddClassModal()">+ Tambah Rombel Baru</button>
+          </div>
+          <div class="overflow-x-auto custom-scrollbar">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead>
+                <tr class="bg-surface-container-low text-outline text-[11px] uppercase tracking-wider font-semibold border-b border-surface-container-high">
+                  <th class="p-3 text-center w-12">No</th>
+                  <th class="p-3">Nama Rombel</th>
+                  <th class="p-3">Jumlah Murid</th>
+                  <th class="p-3 text-right">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="master-kelas-table-body">
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Akun Murid Section -->
+        <div class="bg-surface-container-lowest rounded-2xl p-space-md shadow-sm border border-surface-container-high/60 flex flex-col gap-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary">badge</span>
+              <h3 class="text-sm font-bold text-on-surface">Data Induk Akun Murid</h3>
+              <span id="master-stat-total-students" class="text-xs font-bold text-primary tabular-nums">0</span>
+              <span class="text-xs text-outline" id="master-stat-active-students">0 Aktif</span>
+            </div>
+            <!-- Search & Filter Controls -->
+            <div class="flex flex-wrap items-center gap-2">
+              <div class="relative">
+                <span class="material-symbols-outlined absolute left-2.5 top-2.5 text-outline text-base pointer-events-none">search</span>
+                <input type="text" id="master-student-search" placeholder="Cari nama atau NISN..." class="h-9 pl-8 pr-3 rounded-xl bg-surface-container-low text-xs border border-surface-container-high focus:outline-none focus:ring-2 focus:ring-primary/40 w-48 sm:w-56"/>
+              </div>
+              <select id="master-student-filter-class" class="h-9 px-3 rounded-xl bg-surface-container-low text-xs border border-surface-container-high focus:outline-none cursor-pointer">
+              </select>
+            </div>
+          </div>
+
+          <!-- Bulk Actions Bar for Students -->
+          <div id="master-bulk-student-bar" class="hidden p-2.5 rounded-xl bg-surface-container text-on-surface flex flex-wrap items-center justify-between gap-2 shadow-sm border border-primary/20 animate-fadeIn">
+            <span id="master-selected-student-count" class="text-xs font-bold text-primary">0 Murid Dipilih</span>
+            <div class="flex flex-wrap items-center gap-1.5">
+              <button type="button" class="px-2.5 py-1 rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-xs font-semibold" onclick="app.openBulkMoveClassModal()">
+                Pindah Rombel
+              </button>
+              <button type="button" class="px-2.5 py-1 rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-xs font-semibold" onclick="app.executeBulkResetPassword()">
+                Reset Sandi
+              </button>
+              <button type="button" class="px-2.5 py-1 rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-xs font-semibold" onclick="app.executeBulkSetStatus('aktif')">
+                Aktifkan
+              </button>
+              <button type="button" class="px-2.5 py-1 rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-xs font-semibold" onclick="app.executeBulkSetStatus('nonaktif')">
+                Nonaktifkan
+              </button>
+              <button type="button" class="px-2.5 py-1 rounded-lg bg-error-container text-on-error-container hover:opacity-90 text-xs font-semibold" onclick="app.executeBulkDeleteStudents()">
+                Hapus Massal
+              </button>
+            </div>
+          </div>
+
+          <!-- Students Table -->
+          <div class="overflow-x-auto custom-scrollbar">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead>
+                <tr class="bg-surface-container-low text-outline text-[11px] uppercase tracking-wider font-semibold border-b border-surface-container-high">
+                  <th class="p-3 text-center w-10">
+                    <input type="checkbox" class="rounded text-primary focus:ring-primary w-4 h-4 cursor-pointer" onchange="app.toggleSelectAllStudents(this)">
+                  </th>
+                  <th class="p-3 text-center w-12">No</th>
+                  <th class="p-3">Nama Murid & NISN</th>
+                  <th class="p-3">Rombel</th>
+                  <th class="p-3">Status</th>
+                  <th class="p-3 text-right">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="master-students-table-body">
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =======================================================================
+         VIEW: 4. ADMIN - BUAT & KELOLA TUGAS (RPD Section 3.3 b)
+         Dual-Column layout from Stitch
+         ======================================================================= -->
+    <div id="view-admin-tugas" class="app-view hidden w-full px-gutter py-margin flex flex-col gap-space-lg">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-md">
+        <div class="flex flex-col">
+          <h2 class="text-xl sm:text-2xl font-bold text-on-surface tracking-tight">Kelola Instrumen Tugas</h2>
+          <p class="text-xs text-on-surface-variant mt-0.5">Rancang tugas teks/foto, tentukan target rombel, batas waktu, dan kontrol status penguncian.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <span id="task-metric-total" class="px-3 py-1 rounded-full bg-surface-container-high text-xs font-semibold">0 Instrumen</span>
+          <span id="task-metric-active" class="px-3 py-1 rounded-full bg-secondary-container text-primary text-xs font-bold">0 Aktif</span>
+        </div>
+      </div>
+
+      <!-- 60/40 Grid: Left task list, Right create/edit form -->
+      <div class="grid grid-cols-1 xl:grid-cols-12 gap-space-lg items-start">
+        
+        <!-- Left Column: Tasks Registry (xl:col-span-7) -->
+        <div class="xl:col-span-7 flex flex-col gap-space-md" id="admin-task-list">
+        </div>
+
+        <!-- Right Column: Create / Edit Form Panel (xl:col-span-5) -->
+        <div id="admin-task-form-card" class="xl:col-span-5 bg-surface-container-lowest rounded-2xl p-space-lg shadow-sm border border-surface-container-high/60 flex flex-col gap-space-md sticky top-20">
+          <div class="flex items-center justify-between border-b border-surface-container-high/60 pb-3">
+            <h3 id="task-form-title-label" class="text-base font-bold text-on-surface">Buat Instrumen Tugas Baru</h3>
+            <button type="button" class="text-xs text-outline hover:text-on-surface" onclick="app.resetTaskForm()">Reset Formulir</button>
+          </div>
+
+          <form id="admin-task-form" class="flex flex-col gap-space-md" onsubmit="app.handleTaskFormSubmit(event)">
+            <input type="hidden" id="task-form-id"/>
+
+            <div class="flex flex-col gap-1">
+              <label for="task-form-judul" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Judul Instrumen Tugas *</label>
+              <input type="text" id="task-form-judul" placeholder="Contoh: Rangkuman Bab 3 Shalat Jamak & Qashar" class="h-10 px-3 rounded-xl bg-surface-container-low text-xs border border-surface-container-high focus:outline-none focus:ring-2 focus:ring-primary/40" required/>
+            </div>
+
+            <div class="flex flex-col gap-1">
+              <label for="task-form-deskripsi" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Instruksi & Petunjuk Pengerjaan</label>
+              <textarea id="task-form-deskripsi" rows="3" placeholder="Tuliskan petunjuk jelas bagi murid..." class="p-3 rounded-xl bg-surface-container-low text-xs border border-surface-container-high focus:outline-none focus:ring-2 focus:ring-primary/40 leading-relaxed"></textarea>
+            </div>
+
+            <div class="flex flex-col gap-1.5">
+              <label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Target Rombel (Kelas) *</label>
+              <div id="task-form-classes" class="grid grid-cols-2 gap-2 max-h-36 overflow-y-auto custom-scrollbar p-1">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div class="flex flex-col gap-1">
+                <label for="task-form-jenis" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Format Bukti *</label>
+                <select id="task-form-jenis" class="h-10 px-3 rounded-xl bg-surface-container-low text-xs border border-surface-container-high focus:outline-none cursor-pointer">
+                  <option value="teks">Jawaban Teks</option>
+                  <option value="gambar">Bukti Foto / Gambar (Maks. 5)</option>
+                </select>
+              </div>
+
+              <div class="flex flex-col gap-1">
+                <label for="task-form-status" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Status Tugas</label>
+                <select id="task-form-status" class="h-10 px-3 rounded-xl bg-surface-container-low text-xs border border-surface-container-high focus:outline-none cursor-pointer">
+                  <option value="aktif">Aktif (Dapat Dikerjakan)</option>
+                  <option value="dikunci">Dikunci (Tutup Pengumpulan)</option>
+                  <option value="draf">Draf (Disimpan Dulu)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div class="flex flex-col gap-1">
+                <label for="task-form-score" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Nilai Maksimal</label>
+                <input type="number" id="task-form-score" value="100" min="10" max="100" class="h-10 px-3 rounded-xl bg-surface-container-low text-xs border border-surface-container-high focus:outline-none"/>
+              </div>
+
+              <div class="flex flex-col gap-1">
+                <label for="task-form-chars" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Batas Karakter Teks</label>
+                <input type="number" id="task-form-chars" value="5000" min="100" max="50000" class="h-10 px-3 rounded-xl bg-surface-container-low text-xs border border-surface-container-high focus:outline-none"/>
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-1">
+              <label for="task-form-deadline" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Tenggat Waktu Pengerjaan (Deadline)</label>
+              <input type="datetime-local" id="task-form-deadline" class="h-10 px-3 rounded-xl bg-surface-container-low text-xs border border-surface-container-high focus:outline-none"/>
+            </div>
+
+            <button type="submit" class="w-full h-11 mt-1 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-bold text-sm shadow-md transition-all active:scale-95 flex items-center justify-center gap-2">
+              <span class="material-symbols-outlined text-base">check</span>
+              <span id="task-form-submit-btn-text">Terbitkan Tugas</span>
+            </button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- =======================================================================
+         VIEW: 5. ADMIN - PENGATURAN & BACKUP / GITHUB (RPD Section 3.3 d, 6, 7)
+         ======================================================================= -->
+    <div id="view-admin-settings" class="app-view hidden w-full px-gutter py-margin flex flex-col gap-space-lg">
+      <div class="flex flex-col">
+        <h2 class="text-xl sm:text-2xl font-bold text-on-surface tracking-tight">Pengaturan & Backup Sistem</h2>
+        <p class="text-xs text-on-surface-variant mt-0.5">Kelola identitas madrasah, koneksi backend langsung GitHub, backup JSON berkala, dan kredensial admin.</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
+        
+        <!-- Left: Forms (lg:col-span-8) -->
+        <div class="lg:col-span-8 flex flex-col gap-space-lg">
+          
+          <!-- 1. BACKEND GITHUB DIRECT (NO CLOUDFLARE) -->
+          <div class="bg-surface-container-lowest rounded-2xl p-space-lg shadow-sm border border-surface-container-high/60 flex flex-col gap-space-md">
+            <div class="flex items-center justify-between border-b border-surface-container-high/60 pb-3">
+              <div class="flex items-center gap-2">
+                <span class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+                  <span class="material-symbols-outlined text-lg">cable</span>
+                </span>
+                <div>
+                  <h3 class="text-sm font-bold text-on-surface">Konfigurasi Backend GitHub Direct</h3>
+                  <p class="text-xs text-outline">Tanpa perantara Cloudflare atau server pihak ketiga. Berkomunikasi langsung via GitHub REST API.</p>
+                </div>
+              </div>
+              <span class="telemetry-server-badge px-2.5 py-1 rounded-full bg-secondary-container text-xs font-semibold text-primary">GitHub Status</span>
+            </div>
+
+            <form class="flex flex-col gap-3" onsubmit="app.handleGitHubSettingsSubmit(event)">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="flex flex-col gap-1">
+                  <label for="settings-gh-owner" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">GitHub Owner / Akun *</label>
+                  <input type="text" id="settings-gh-owner" placeholder="Contoh: mtsn1-model atau username-anda" class="h-10 px-3 rounded-xl bg-surface-container-low text-xs border border-surface-container-high focus:outline-none" required/>
+                </div>
+                <div class="flex flex-col gap-1">
+                  <label for="settings-gh-repo" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Nama Repositori *</label>
+                  <input type="text" id="settings-gh-repo" placeholder="Contoh: tugasku-data" class="h-10 px-3 rounded-xl bg-surface-container-low text-xs border border-surface-container-high focus:outline-none" required/>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="flex flex-col gap-1">
+                  <label for="settings-gh-branch" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Branch</label>
+                  <input type="text" id="settings-gh-branch" value="main" class="h-10 px-3 rounded-xl bg-surface-container-low text-xs border border-surface-container-high focus:outline-none"/>
+                </div>
+                <div class="sm:col-span-2 flex flex-col gap-1">
+                  <label for="settings-gh-token" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Personal Access Token (PAT) *</label>
+                  <input type="password" id="settings-gh-token" placeholder="ghp_... atau fine-grained github_pat_..." class="h-10 px-3 rounded-xl bg-surface-container-low text-xs border border-surface-container-high focus:outline-none" required/>
+                </div>
+              </div>
+
+              <div class="flex flex-wrap items-center gap-2 pt-2">
+                <button type="submit" id="btn-test-github" class="px-4 py-2 rounded-xl bg-surface-container hover:bg-surface-container-high text-primary font-bold text-xs flex items-center gap-1.5 transition-colors">
+                  <span class="material-symbols-outlined text-base">cable</span>
+                  <span>Uji Koneksi GitHub</span>
+                </button>
+                <button type="button" class="px-4 py-2 rounded-xl bg-primary text-white hover:bg-primary-container font-bold text-xs flex items-center gap-1.5 transition-all shadow-sm" onclick="app.handleInitGitHubDatabase()">
+                  <span class="material-symbols-outlined text-base">auto_fix_high</span>
+                  <span>Inisialisasi Database Otomatis (1-Klik)</span>
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- 2. PROFIL MADRASAH (CONFIG) -->
+          <div class="bg-surface-container-lowest rounded-2xl p-space-lg shadow-sm border border-surface-container-high/60 flex flex-col gap-space-md">
+            <div class="flex items-center gap-2 border-b border-surface-container-high/60 pb-3">
+              <span class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+                <span class="material-symbols-outlined text-lg">school</span>
+              </span>
+              <div>
+                <h3 class="text-sm font-bold text-on-surface">Identitas Profil Madrasah</h3>
+                <p class="text-xs text-outline">Informasi ini ditampilkan pada header sistem, kartu login murid, dan laporan hasil export.</p>
+              </div>
+            </div>
+
+            <form class="flex flex-col gap-3" onsubmit="app.handleProfileSettingsSubmit(event)">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="flex flex-col gap-1">
+                  <label for="settings-nama-madrasah" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Nama Lembaga Madrasah *</label>
+                  <input type="text" id="settings-nama-madrasah" class="h-10 px-3 rounded-xl bg-surface-container-low text-xs border border-surface-container-high focus:outline-none" required/>
+                </div>
+                <div class="flex flex-col gap-1">
+                  <label for="settings-sub-title" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Sub-Judul / Slogan</label>
+                  <input type="text" id="settings-sub-title" class="h-10 px-3 rounded-xl bg-surface-container-low text-xs border border-surface-container-high focus:outline-none"/>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="flex flex-col gap-1">
+                  <label for="settings-tahun-pelajaran" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Tahun Pelajaran *</label>
+                  <input type="text" id="settings-tahun-pelajaran" placeholder="Contoh: 2026/2027" class="h-10 px-3 rounded-xl bg-surface-container-low text-xs border border-surface-container-high focus:outline-none" required/>
+                </div>
+                <div class="flex flex-col gap-1">
+                  <label for="settings-semester" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Semester *</label>
+                  <select id="settings-semester" class="h-10 px-3 rounded-xl bg-surface-container-low text-xs border border-surface-container-high focus:outline-none">
+                    <option value="Ganjil">Ganjil</option>
+                    <option value="Genap">Genap</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="flex flex-col gap-1">
+                  <label for="settings-kepala-madrasah" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Kepala Madrasah</label>
+                  <input type="text" id="settings-kepala-madrasah" class="h-10 px-3 rounded-xl bg-surface-container-low text-xs border border-surface-container-high focus:outline-none"/>
+                </div>
+                <div class="flex flex-col gap-1">
+                  <label for="settings-nip-kepala" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">NIP Kepala Madrasah</label>
+                  <input type="text" id="settings-nip-kepala" class="h-10 px-3 rounded-xl bg-surface-container-low text-xs border border-surface-container-high focus:outline-none"/>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="flex flex-col gap-1">
+                  <label for="settings-guru-pengampu" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Guru Pengampu</label>
+                  <input type="text" id="settings-guru-pengampu" class="h-10 px-3 rounded-xl bg-surface-container-low text-xs border border-surface-container-high focus:outline-none"/>
+                </div>
+                <div class="flex flex-col gap-1">
+                  <label for="settings-alamat" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Alamat Lembaga</label>
+                  <input type="text" id="settings-alamat" class="h-10 px-3 rounded-xl bg-surface-container-low text-xs border border-surface-container-high focus:outline-none"/>
+                </div>
+              </div>
+
+              <button type="submit" class="self-start px-5 py-2.5 rounded-xl bg-primary text-white font-bold text-xs shadow-sm hover:bg-primary-container transition-all active:scale-95">
+                Simpan Profil Madrasah
+              </button>
+            </form>
+          </div>
+
+          <!-- 3. LOG AUDIT AKTIVITAS SISTEM -->
+          <div class="bg-surface-container-lowest rounded-2xl p-space-md shadow-sm border border-surface-container-high/60 flex flex-col gap-3">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary">history_toggle_off</span>
+                <h3 class="text-sm font-bold text-on-surface">Log Audit & Aktivitas Administratif</h3>
+              </div>
+              <span class="text-xs text-outline font-semibold">Terekam Otomatis</span>
+            </div>
+            <div class="overflow-x-auto max-h-56 custom-scrollbar">
+              <table class="w-full text-left text-xs">
+                <thead>
+                  <tr class="bg-surface-container-low text-outline text-[11px] uppercase tracking-wider font-semibold border-b border-surface-container-high">
+                    <th class="p-2.5">Waktu</th>
+                    <th class="p-2.5">Pengguna</th>
+                    <th class="p-2.5">Aksi</th>
+                    <th class="p-2.5">Detail</th>
+                  </tr>
+                </thead>
+                <tbody id="settings-audit-table-body">
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right: Backup, Restore & Password (lg:col-span-4) -->
+        <div class="lg:col-span-4 flex flex-col gap-space-lg">
+          
+          <!-- Backup & Restore Box (RPD Section 6) -->
+          <div class="bg-surface-container-lowest rounded-2xl p-space-md shadow-sm border border-surface-container-high/60 flex flex-col gap-3">
+            <div class="flex items-center gap-2">
+              <span class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+                <span class="material-symbols-outlined text-lg">settings_backup_restore</span>
+              </span>
+              <h3 class="text-sm font-bold text-on-surface">Backup & Restore</h3>
+            </div>
+            <p class="text-xs text-secondary leading-relaxed">
+              Unduh salinan cadangan lengkap seluruh data rombel, akun, tugas, dan kiriman. Riwayat commit GitHub menjadi pengaman tambahan.
+            </p>
+            <div class="flex flex-col gap-2 pt-2">
+              <button type="button" class="w-full py-2.5 px-3 rounded-xl bg-surface-container hover:bg-surface-container-high text-primary font-bold text-xs flex items-center justify-center gap-2 transition-colors" onclick="app.handleDownloadBackup(true)">
+                <span class="material-symbols-outlined text-base">download</span>
+                <span>Unduh Backup Lengkap (.JSON)</span>
+              </button>
+              <button type="button" class="w-full py-2 px-3 rounded-xl text-outline hover:text-on-surface text-xs font-medium" onclick="app.handleDownloadBackup(false)">
+                Unduh Backup Ringkas (Tanpa Foto)
+              </button>
+              <hr class="border-surface-container-high my-1"/>
+              <button type="button" class="w-full py-2.5 px-3 rounded-xl bg-secondary-container hover:opacity-90 text-on-secondary-container font-bold text-xs flex items-center justify-center gap-2 transition-colors" onclick="app.openRestoreModal()">
+                <span class="material-symbols-outlined text-base">restore</span>
+                <span>Restore Data dari Berkas</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Ubah Sandi Admin Box (RPD 4.3) -->
+          <div class="bg-surface-container-lowest rounded-2xl p-space-md shadow-sm border border-surface-container-high/60 flex flex-col gap-3">
+            <div class="flex items-center gap-2">
+              <span class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+                <span class="material-symbols-outlined text-lg">key</span>
+              </span>
+              <h3 class="text-sm font-bold text-on-surface">Ubah Sandi Administrator</h3>
+            </div>
+            <form class="flex flex-col gap-2.5" onsubmit="app.handleAdminChangePassword(event)">
+              <div class="flex flex-col gap-1">
+                <label for="admin-pass-old" class="text-[11px] font-bold text-outline uppercase tracking-wider">Sandi Lama</label>
+                <input type="password" id="admin-pass-old" placeholder="Masukkan kata sandi lama" class="h-9 px-3 rounded-xl bg-surface-container-low text-xs border border-surface-container-high focus:outline-none" required/>
+              </div>
+              <div class="flex flex-col gap-1">
+                <label for="admin-pass-new" class="text-[11px] font-bold text-outline uppercase tracking-wider">Sandi Baru (Min. 6 Karakter)</label>
+                <input type="password" id="admin-pass-new" placeholder="Kata sandi baru" class="h-9 px-3 rounded-xl bg-surface-container-low text-xs border border-surface-container-high focus:outline-none" required minlength="6"/>
+              </div>
+              <div class="flex flex-col gap-1">
+                <label for="admin-pass-confirm" class="text-[11px] font-bold text-outline uppercase tracking-wider">Konfirmasi Sandi Baru</label>
+                <input type="password" id="admin-pass-confirm" placeholder="Ulangi kata sandi baru" class="h-9 px-3 rounded-xl bg-surface-container-low text-xs border border-surface-container-high focus:outline-none" required minlength="6"/>
+              </div>
+              <button type="submit" class="w-full mt-2 py-2.5 rounded-xl bg-primary text-white font-bold text-xs shadow-sm hover:bg-primary-container transition-all active:scale-95">
+                Simpan Kata Sandi Baru
+              </button>
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- =======================================================================
+         VIEW: 6. MURID - BERANDA / DASHBOARD (RPD Section 3.2 a)
+         ======================================================================= -->
+    <div id="view-student-dashboard" class="app-view hidden w-full max-w-5xl mx-auto px-4 sm:px-gutter py-6 flex flex-col gap-space-lg">
+      <!-- Greeting Banner -->
+      <div class="p-space-lg rounded-2xl bg-surface-container-lowest shadow-sm border border-surface-container-high/60 flex flex-col md:flex-row md:items-center justify-between gap-space-md relative overflow-hidden">
+        <div class="flex flex-col gap-1 z-10">
+          <span class="text-xs uppercase font-bold text-primary tracking-wider">Ruang Belajar Murid</span>
+          <h2 id="student-greeting-name" class="text-xl sm:text-2xl font-bold text-on-surface">Assalamu'alaikum</h2>
+          <p class="text-xs text-on-surface-variant">Pantau tugas aktif, tenggat waktu pengerjaan, dan riwayat nilai yang telah dievaluasi guru.</p>
+        </div>
+        <div class="flex items-center gap-2 z-10">
+          <button type="button" class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-primary text-on-primary font-bold text-xs shadow-md hover:bg-primary-container transition-all active:scale-95" onclick="app.navigateTo('student-submit')">
+            <span class="material-symbols-outlined text-base">upload_file</span>
+            <span>Kerjakan Tugas</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 4 Summary Cards (RPD 3.2 a) -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-space-sm sm:gap-space-md">
+        <div class="p-4 rounded-2xl bg-surface-container-lowest shadow-sm border border-surface-container-high/60 flex flex-col justify-between">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-outline">Tugas Aktif</span>
+          <div class="mt-2 flex items-baseline gap-1">
+            <span id="student-stat-active" class="text-2xl font-bold text-primary tabular-nums">0</span>
+            <span class="text-xs text-outline">Tugas</span>
+          </div>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-surface-container-lowest shadow-sm border border-surface-container-high/60 flex flex-col justify-between">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-outline">Sudah Dikerjakan</span>
+          <div class="mt-2 flex items-baseline gap-1">
+            <span id="student-stat-completed" class="text-2xl font-bold text-emerald-700 tabular-nums">0</span>
+            <span class="text-xs text-outline">Terkirim</span>
+          </div>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-surface-container-lowest shadow-sm border border-surface-container-high/60 flex flex-col justify-between">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-outline">Belum Dikerjakan</span>
+          <div class="mt-2 flex items-baseline gap-1">
+            <span id="student-stat-pending" class="text-2xl font-bold text-rose-700 tabular-nums">0</span>
+            <span class="text-xs text-outline">Tertunda</span>
+          </div>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-surface-container-lowest shadow-sm border border-surface-container-high/60 flex flex-col justify-between">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-outline">Sudah Dinilai</span>
+          <div class="mt-2 flex items-baseline gap-1">
+            <span id="student-stat-graded" class="text-2xl font-bold text-tertiary tabular-nums">0</span>
+            <span class="text-xs text-outline">Dinilai</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Urgent Tasks (RPD 3.2 a) -->
+      <div class="flex flex-col gap-3">
+        <div class="flex items-center justify-between">
+          <h3 class="text-sm font-bold text-on-surface flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary text-base">notification_important</span>
+            <span>Daftar Tugas Aktif Rombongan Belajar</span>
+          </h3>
+          <button type="button" class="text-xs text-primary font-bold hover:underline" onclick="app.navigateTo('student-rekap')">
+            Lihat Rekap Nilai Lengkap &rarr;
+          </button>
+        </div>
+
+        <div id="student-urgent-tasks-container" class="flex flex-col gap-3">
+        </div>
+      </div>
+    </div>
+
+    <!-- =======================================================================
+         VIEW: 7. MURID - INPUT TUGAS (TEKS / FOTO) (RPD Section 3.2 b & 5.6)
+         ======================================================================= -->
+    <div id="view-student-submit" class="app-view hidden w-full max-w-4xl mx-auto px-4 sm:px-gutter py-6 flex flex-col gap-space-lg">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div class="flex flex-col">
+          <h2 class="text-xl font-bold text-on-surface">Unggah Jawaban Tugas Murid</h2>
+          <p class="text-xs text-outline">Kirimkan hasil pengerjaan tugas teks atau foto dokumentasi sesuai instruksi.</p>
+        </div>
+        <!-- Task Switcher Dropdown -->
+        <div class="min-w-[260px]">
+          <select id="student-submit-task-select" class="w-full h-10 px-3 rounded-xl bg-surface-container-low text-xs border border-surface-container-high font-semibold focus:outline-none cursor-pointer">
+          </select>
+        </div>
+      </div>
+
+      <!-- Task Details Header Card -->
+      <div class="p-space-lg rounded-2xl bg-surface-container-lowest shadow-sm border border-surface-container-high/60 flex flex-col gap-2">
+        <div class="flex flex-wrap items-center gap-2">
+          <span id="submit-task-type-badge" class="px-2.5 py-0.5 rounded-full bg-secondary-container text-on-secondary-container text-xs font-bold">
+            Format Teks
+          </span>
+          <span class="text-outline text-xs">•</span>
+          <span class="text-xs text-outline">Maks: <strong id="submit-task-max-score" class="text-on-surface">100 Poin</strong></span>
+          <span class="text-outline text-xs">•</span>
+          <span class="text-xs text-outline flex items-center gap-1">
+            <span class="material-symbols-outlined text-sm">schedule</span>
+            Tenggat: <strong id="submit-task-deadline" class="text-on-surface">-</strong>
+          </span>
+        </div>
+        <h3 id="submit-task-title" class="text-lg font-bold text-on-surface mt-1">Judul Tugas</h3>
+        <p id="submit-task-desc" class="text-xs text-secondary leading-relaxed whitespace-pre-line"></p>
+
+        <!-- Lock Warning if applicable -->
+        <div id="submit-lock-notice" class="hidden mt-2 p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs font-semibold flex items-center gap-2">
+          <span class="material-symbols-outlined text-base text-amber-600">lock</span>
+          <span>Pengumpulan ditutup. Tugas telah dikunci atau telah melewati tenggat waktu.</span>
+        </div>
+      </div>
+
+      <!-- Submission Form Container -->
+      <div class="bg-surface-container-lowest rounded-2xl p-space-lg shadow-sm border border-surface-container-high/60 flex flex-col gap-space-md">
+        
+        <form id="student-submit-form" class="flex flex-col gap-space-md" onsubmit="app.handleStudentSubmitForm(event)">
+          
+          <!-- SECTION A: TEKS ANSWER (RPD 3.2 b) -->
+          <div id="submit-text-section" class="flex flex-col gap-2">
+            <div class="flex items-center justify-between">
+              <label for="student-text-answer" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">
+                Tuliskan Jawaban Tugas Anda Di Sini *
+              </label>
+              <span id="student-char-counter" class="text-xs text-outline font-mono">0 / 5000 karakter</span>
+            </div>
+            <textarea id="student-text-answer" rows="9" placeholder="Ketik jawaban lengkap Anda di sini..." class="w-full p-4 rounded-xl bg-surface-container-low text-xs sm:text-sm border border-surface-container-high focus:outline-none focus:ring-2 focus:ring-primary/40 leading-relaxed font-sans"></textarea>
+          </div>
+
+          <!-- SECTION B: GAMBAR ANSWER (RPD 3.2 b & 5.6) -->
+          <div id="submit-image-section" class="hidden flex flex-col gap-space-md">
+            <div class="flex items-center justify-between">
+              <label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">
+                Unggah Bukti Foto / Gambar Hasil Tugas *
+              </label>
+              <span id="staged-image-count" class="text-xs text-outline font-semibold">0 / 5 Foto</span>
+            </div>
+
+            <!-- Drag & Drop Zone -->
+            <div class="p-6 rounded-2xl border-2 border-dashed border-outline-variant hover:border-primary bg-surface-container-low/50 hover:bg-surface-container-low text-center flex flex-col items-center justify-center gap-2 cursor-pointer transition-colors" onclick="document.getElementById('student-file-picker').click()">
+              <input type="file" id="student-file-picker" accept="image/jpeg,image/png,image/webp" multiple class="hidden" onchange="app.handleImageFileInput(this.files)"/>
+              <span class="material-symbols-outlined text-4xl text-primary">add_photo_alternate</span>
+              <div class="flex flex-col gap-0.5">
+                <span class="text-xs font-bold text-on-surface">Klik untuk pilih foto dari galeri atau kamera HP</span>
+                <span class="text-[11px] text-outline">Maks. 5 foto • Otomatis dikompresi WebP (Maks. 2MB per gambar)</span>
+              </div>
+            </div>
+
+            <!-- Loader indicator during canvas compression -->
+            <div id="image-upload-loader" class="hidden p-3 rounded-xl bg-surface-container text-xs text-primary font-semibold flex items-center justify-center gap-2">
+              <span class="material-symbols-outlined animate-spin text-lg">progress_activity</span>
+              <span>Sedang mengompresi gambar di browser...</span>
+            </div>
+
+            <!-- Staged Images Thumbnails Gallery -->
+            <div id="staged-images-gallery" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+            </div>
+          </div>
+
+          <!-- Anti Duplicate Notice -->
+          <div class="p-3 rounded-xl bg-surface-container-low text-[11px] text-outline flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary text-base">info</span>
+            <span>Satu murid hanya memiliki 1 kiriman per tugas. Mengirim ulang otomatis memperbarui jawaban Anda sebelumnya.</span>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
+            <button type="button" id="student-delete-sub-btn" class="hidden px-4 py-2.5 rounded-xl bg-error-container text-on-error-container hover:opacity-90 font-bold text-xs flex items-center gap-1.5 transition-colors" onclick="app.handleStudentDeleteSubmission()">
+              <span class="material-symbols-outlined text-base">delete</span>
+              <span>Tarik / Hapus Kiriman</span>
+            </button>
+
+            <button type="submit" id="student-submit-btn" class="ml-auto px-6 py-3 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-bold text-xs sm:text-sm shadow-md transition-all active:scale-95 flex items-center gap-2">
+              <span>Kirim Jawaban Tugas</span>
+              <span class="material-symbols-outlined text-base">send</span>
+            </button>
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+
+    <!-- =======================================================================
+         VIEW: 8. MURID - REKAP TUGAS & NILAI (RPD Section 3.2 c)
+         ======================================================================= -->
+    <div id="view-student-rekap" class="app-view hidden w-full max-w-4xl mx-auto px-4 sm:px-gutter py-6 flex flex-col gap-space-lg">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h2 class="text-xl font-bold text-on-surface">Rekap Capaian Tugas & Nilai</h2>
+          <p class="text-xs text-outline">Lihat catatan evaluasi dan nilai yang telah dipublikasikan guru.</p>
+        </div>
+
+        <!-- Search Input -->
+        <div class="relative w-full sm:w-64">
+          <span class="material-symbols-outlined absolute left-2.5 top-2.5 text-outline text-base pointer-events-none">search</span>
+          <input type="text" id="student-rekap-search" placeholder="Cari judul tugas..." class="w-full h-9 pl-8 pr-3 rounded-xl bg-surface-container-low text-xs border border-surface-container-high focus:outline-none" oninput="app.renderStudentRekap()"/>
+        </div>
+      </div>
+
+      <!-- Segmented Tabs: Belum Dikerjakan vs Sudah Dikerjakan -->
+      <div class="flex items-center gap-2 p-1.5 rounded-2xl bg-surface-container-low self-start">
+        <button type="button" class="student-rekap-tab active px-4 py-2 rounded-xl bg-primary text-on-primary font-bold text-xs shadow-sm transition-all" data-tab="belum">
+          Belum Dikerjakan
+        </button>
+        <button type="button" class="student-rekap-tab px-4 py-2 rounded-xl text-on-surface-variant font-bold text-xs transition-all" data-tab="sudah">
+          Sudah Dikerjakan
+        </button>
+      </div>
+
+      <!-- List of Tasks Container -->
+      <div id="student-rekap-list-container" class="flex flex-col gap-3">
+      </div>
+    </div>
+
+    <!-- =======================================================================
+         VIEW: 9. MURID - PENGATURAN AKUN (RPD Section 3.2 d)
+         ======================================================================= -->
+    <div id="view-student-settings" class="app-view hidden w-full max-w-xl mx-auto px-4 sm:px-gutter py-8 flex flex-col gap-space-lg">
+      <div class="p-space-lg rounded-2xl bg-surface-container-lowest shadow-sm border border-surface-container-high/60 flex flex-col gap-space-md">
+        <div class="flex items-center gap-3 border-b border-surface-container-high/60 pb-4">
+          <div class="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center text-primary font-bold text-lg">
+            <span class="material-symbols-outlined text-2xl">person</span>
+          </div>
+          <div class="flex flex-col">
+            <h3 id="student-settings-name" class="text-base font-bold text-on-surface">Nama Murid</h3>
+            <span id="student-settings-nisn" class="text-xs text-outline">NISN</span>
+            <span id="student-settings-class" class="text-xs font-semibold text-primary">Rombel</span>
+          </div>
+        </div>
+
+        <form class="flex flex-col gap-3" onsubmit="app.handleStudentChangePassword(event)">
+          <span class="text-xs font-bold text-on-surface uppercase tracking-wider">Ubah Kata Sandi Murid</span>
+          
+          <div class="flex flex-col gap-1">
+            <label for="student-pass-old" class="text-[11px] font-bold text-outline uppercase tracking-wider">Sandi Lama</label>
+            <input type="password" id="student-pass-old" placeholder="Masukkan kata sandi lama" class="h-10 px-3 rounded-xl bg-surface-container-low text-xs border border-surface-container-high focus:outline-none" required/>
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <label for="student-pass-new" class="text-[11px] font-bold text-outline uppercase tracking-wider">Sandi Baru (Min. 6 Karakter)</label>
+            <input type="password" id="student-pass-new" placeholder="Kata sandi baru" class="h-10 px-3 rounded-xl bg-surface-container-low text-xs border border-surface-container-high focus:outline-none" required minlength="6"/>
+          </div>
+
+          <div class="flex flex-col gap-1">
+            <label for="student-pass-confirm" class="text-[11px] font-bold text-outline uppercase tracking-wider">Konfirmasi Sandi Baru</label>
+            <input type="password" id="student-pass-confirm" placeholder="Ulangi kata sandi baru" class="h-10 px-3 rounded-xl bg-surface-container-low text-xs border border-surface-container-high focus:outline-none" required minlength="6"/>
+          </div>
+
+          <button type="submit" class="w-full mt-2 py-2.5 rounded-xl bg-primary text-white font-bold text-xs shadow-sm hover:bg-primary-container transition-all active:scale-95">
+            Simpan Kata Sandi Baru
+          </button>
+        </form>
+
+        <div class="pt-3 border-t border-surface-container-high/60">
+          <button type="button" class="btn-trigger-logout w-full py-2.5 rounded-xl bg-error-container text-on-error-container hover:opacity-90 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors">
+            <span class="material-symbols-outlined text-base">logout</span>
+            <span>Keluar dari Akun</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- =========================================================================
+       DRAWER: GRADING & SUBMISSION INSPECTION (RPD 3.3 c)
+       Slide-over panel from right (480px width)
+       ========================================================================= -->
+  <div id="grading-drawer" class="hidden fixed inset-0 z-50 overflow-hidden select-none">
+    <!-- Backdrop overlay -->
+    <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm transition-opacity" onclick="app.closeGradingDrawer()"></div>
+
+    <div class="fixed inset-y-0 right-0 max-w-full flex pl-10">
+      <div class="drawer-panel w-screen max-w-md md:max-w-xl bg-surface-container-lowest shadow-2xl flex flex-col justify-between transform transition-transform duration-300 translate-x-full">
+        
+        <!-- Drawer Header -->
+        <div class="p-space-md border-b border-surface-container-high/60 flex items-center justify-between bg-surface-container-lowest">
+          <div class="flex items-center gap-2">
+            <span class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+              <span class="material-symbols-outlined text-lg">rate_review</span>
+            </span>
+            <div class="flex flex-col">
+              <h3 id="drawer-student-name" class="text-sm font-bold text-on-surface">Nama Murid</h3>
+              <span id="drawer-student-nisn" class="text-xs text-outline">NISN / Absen</span>
+            </div>
+          </div>
+          <button type="button" class="p-1.5 rounded-lg text-outline hover:text-on-surface hover:bg-surface-container-high transition-colors" onclick="app.closeGradingDrawer()">
+            <span class="material-symbols-outlined text-xl">close</span>
+          </button>
+        </div>
+
+        <!-- Drawer Content Body -->
+        <div class="p-space-lg flex-1 overflow-y-auto custom-scrollbar flex flex-col gap-space-md">
+          <div id="drawer-pub-status"></div>
+
+          <!-- Submission inspection area -->
+          <div id="drawer-submission-content" class="flex flex-col gap-2">
+          </div>
+
+          <hr class="border-surface-container-high my-2"/>
+
+          <!-- Grading Input Form -->
+          <div class="flex flex-col gap-3">
+            <div class="flex items-center justify-between">
+              <label for="drawer-grade-input" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">
+                Berikan Nilai Angka (0 - <span id="drawer-max-score">100</span>) *
+              </label>
+            </div>
+            <input type="number" id="drawer-grade-input" min="0" max="100" placeholder="0 - 100" class="h-11 px-4 rounded-xl bg-surface-container-low text-lg font-bold text-primary border border-surface-container-high focus:outline-none focus:ring-2 focus:ring-primary/40"/>
+
+            <div class="flex flex-col gap-1">
+              <label for="drawer-notes-input" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">
+                Catatan Guru / Pembinaan (Opsional)
+              </label>
+              <textarea id="drawer-notes-input" rows="3" placeholder="Tuliskan apresiasi, masukan perbaikan, atau catatan bimbingan..." class="p-3 rounded-xl bg-surface-container-low text-xs border border-surface-container-high focus:outline-none focus:ring-2 focus:ring-primary/40 leading-relaxed"></textarea>
+            </div>
+
+            <button type="button" class="w-full py-3 rounded-xl bg-primary text-white font-bold text-xs sm:text-sm shadow-md hover:bg-primary-container transition-all active:scale-95 flex items-center justify-center gap-1.5" onclick="app.saveDrawerGrade()">
+              <span class="material-symbols-outlined text-base">save</span>
+              <span>Simpan Nilai Murid</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Drawer Footer: Previous / Next Navigation for Rapid Grading (RPD 3.3 c) -->
+        <div class="p-space-md border-t border-surface-container-high/60 bg-surface-container-low flex items-center justify-between">
+          <button type="button" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface font-semibold text-xs transition-colors" onclick="app.navigateGradingStudent(-1)">
+            <span class="material-symbols-outlined text-sm">arrow_back</span>
+            <span>Murid Sebelumnya</span>
+          </button>
+          <button type="button" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface font-semibold text-xs transition-colors" onclick="app.navigateGradingStudent(1)">
+            <span>Murid Berikutnya</span>
+            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       LIGHTBOX: HIGH-RESOLUTION ZOOM IMAGE VIEWER
+       ========================================================================= -->
+  <div id="lightbox-modal" class="hidden fixed inset-0 z-50 lightbox-overlay flex flex-col justify-between p-4 select-none">
+    <div class="flex items-center justify-between text-white">
+      <span id="lightbox-counter" class="text-xs font-mono bg-black/50 px-3 py-1 rounded-full">1 / 1</span>
+      <button type="button" class="p-2 rounded-full bg-black/40 hover:bg-black/80 text-white transition-colors" onclick="app.closeLightbox()">
+        <span class="material-symbols-outlined text-2xl">close</span>
+      </button>
+    </div>
+
+    <div class="flex-1 flex items-center justify-center p-2 relative">
+      <button type="button" class="absolute left-4 p-3 rounded-full bg-black/40 hover:bg-black/80 text-white transition-colors" onclick="app.navigateLightbox(-1)">
+        <span class="material-symbols-outlined text-2xl">chevron_left</span>
+      </button>
+      <img id="lightbox-image" src="" alt="Pratinjau resolusi tinggi" class="max-h-[85vh] max-w-[90vw] object-contain rounded-lg shadow-2xl transition-all"/>
+      <button type="button" class="absolute right-4 p-3 rounded-full bg-black/40 hover:bg-black/80 text-white transition-colors" onclick="app.navigateLightbox(1)">
+        <span class="material-symbols-outlined text-2xl">chevron_right</span>
+      </button>
+    </div>
+
+    <div class="text-center text-white/60 text-xs py-1">
+      Gunakan tombol panah atau tombol di layar untuk beralih foto.
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MODALS: CLASS, STUDENT, BULK MOVE, IMPORT, RESTORE
+       ========================================================================= -->
+
+  <!-- Modal: Tambah/Ubah Kelas -->
+  <div id="modal-class" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 modal-backdrop-close">
+    <div class="w-full max-w-md bg-surface-container-lowest rounded-2xl p-space-lg shadow-2xl border border-surface-container-high/60 modal-content-enter">
+      <div class="flex items-center justify-between border-b border-surface-container-high/60 pb-3">
+        <h3 id="modal-class-title" class="text-sm font-bold text-on-surface">Tambah Rombel Baru</h3>
+        <button type="button" class="text-outline hover:text-on-surface" onclick="document.getElementById('modal-class').classList.add('hidden')">
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
+      <form class="flex flex-col gap-4 mt-4" onsubmit="app.handleClassFormSubmit(event)">
+        <input type="hidden" id="class-form-id"/>
+        <div class="flex flex-col gap-1">
+          <label for="class-form-nama" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Nama Rombongan Belajar / Kelas *</label>
+          <input type="text" id="class-form-nama" placeholder="Contoh: IX-A, IX-B, VII-Tahfidz" class="h-10 px-3 rounded-xl bg-surface-container-low text-xs border border-surface-container-high focus:outline-none" required/>
+        </div>
+        <div class="flex items-center justify-end gap-2 pt-2">
+          <button type="button" class="px-4 py-2 rounded-xl text-xs font-semibold text-outline hover:bg-surface-container" onclick="document.getElementById('modal-class').classList.add('hidden')">Batal</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-primary text-white text-xs font-bold shadow-sm hover:bg-primary-container">Simpan Rombel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Tambah/Ubah Murid -->
+  <div id="modal-student" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 modal-backdrop-close">
+    <div class="w-full max-w-md bg-surface-container-lowest rounded-2xl p-space-lg shadow-2xl border border-surface-container-high/60 modal-content-enter">
+      <div class="flex items-center justify-between border-b border-surface-container-high/60 pb-3">
+        <h3 id="modal-student-title" class="text-sm font-bold text-on-surface">Tambah Akun Murid Baru</h3>
+        <button type="button" class="text-outline hover:text-on-surface" onclick="document.getElementById('modal-student').classList.add('hidden')">
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
+      <form id="student-form" class="flex flex-col gap-3 mt-4" onsubmit="app.handleStudentFormSubmit(event)">
+        <input type="hidden" id="student-form-id"/>
+        <div class="flex flex-col gap-1">
+          <label for="student-form-nama" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Nama Lengkap Murid *</label>
+          <input type="text" id="student-form-nama" placeholder="Contoh: Ahmad Rasyid Al-Fath" class="h-10 px-3 rounded-xl bg-surface-container-low text-xs border border-surface-container-high focus:outline-none" required/>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="flex flex-col gap-1">
+            <label for="student-form-username" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Username / NISN *</label>
+            <input type="text" id="student-form-username" placeholder="0081234567" class="h-10 px-3 rounded-xl bg-surface-container-low text-xs border border-surface-container-high focus:outline-none" required/>
+          </div>
+          <div class="flex flex-col gap-1">
+            <label for="student-form-absen" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">No. Absen</label>
+            <input type="number" id="student-form-absen" placeholder="1" min="1" max="99" class="h-10 px-3 rounded-xl bg-surface-container-low text-xs border border-surface-container-high focus:outline-none"/>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="flex flex-col gap-1">
+            <label for="student-form-kelas" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Rombel (Kelas) *</label>
+            <select id="student-form-kelas" class="h-10 px-3 rounded-xl bg-surface-container-low text-xs border border-surface-container-high focus:outline-none cursor-pointer">
+            </select>
+          </div>
+          <div class="flex flex-col gap-1">
+            <label for="student-form-status" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Status Akun</label>
+            <select id="student-form-status" class="h-10 px-3 rounded-xl bg-surface-container-low text-xs border border-surface-container-high focus:outline-none">
+              <option value="aktif">Aktif</option>
+              <option value="nonaktif">Nonaktif</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="student-form-password" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Kata Sandi (Kosongkan jika bawaan: 123456)</label>
+          <input type="password" id="student-form-password" placeholder="Bawaan: 123456" class="h-10 px-3 rounded-xl bg-surface-container-low text-xs border border-surface-container-high focus:outline-none"/>
+        </div>
+        <div class="flex items-center justify-end gap-2 pt-2">
+          <button type="button" class="px-4 py-2 rounded-xl text-xs font-semibold text-outline hover:bg-surface-container" onclick="document.getElementById('modal-student').classList.add('hidden')">Batal</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-primary text-white text-xs font-bold shadow-sm hover:bg-primary-container">Simpan Murid</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Pindah Rombel Massal -->
+  <div id="modal-bulk-move" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 modal-backdrop-close">
+    <div class="w-full max-w-md bg-surface-container-lowest rounded-2xl p-space-lg shadow-2xl border border-surface-container-high/60 modal-content-enter">
+      <div class="flex items-center justify-between border-b border-surface-container-high/60 pb-3">
+        <h3 class="text-sm font-bold text-on-surface">Pindah Rombel Massal</h3>
+        <button type="button" class="text-outline hover:text-on-surface" onclick="document.getElementById('modal-bulk-move').classList.add('hidden')">
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
+      <div class="flex flex-col gap-4 mt-4">
+        <p class="text-xs text-on-surface-variant leading-relaxed">
+          Pindahkan sebanyak <strong id="bulk-move-count" class="text-primary font-bold">0</strong> murid terpilih ke rombongan belajar baru. Riwayat kiriman tugas yang sudah pernah dikumpulkan murid tetap aman tersimpan.
+        </p>
+        <div class="flex flex-col gap-1">
+          <label for="bulk-move-target-class" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Pilih Rombel Tujuan</label>
+          <select id="bulk-move-target-class" class="h-10 px-3 rounded-xl bg-surface-container-low text-xs border border-surface-container-high focus:outline-none">
+          </select>
+        </div>
+        <div class="flex items-center justify-end gap-2 pt-2">
+          <button type="button" class="px-4 py-2 rounded-xl text-xs font-semibold text-outline hover:bg-surface-container" onclick="document.getElementById('modal-bulk-move').classList.add('hidden')">Batal</button>
+          <button type="button" class="px-5 py-2 rounded-xl bg-primary text-white text-xs font-bold shadow-sm hover:bg-primary-container" onclick="app.executeBulkMoveClass()">Eksekusi Mutasi</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Import Akun Murid XLSX (RPD Section 5) -->
+  <div id="modal-import-students" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 modal-backdrop-close">
+    <div class="w-full max-w-xl bg-surface-container-lowest rounded-2xl p-space-lg shadow-2xl border border-surface-container-high/60 modal-content-enter flex flex-col gap-4 max-h-[90vh] overflow-y-auto custom-scrollbar">
+      <div class="flex items-center justify-between border-b border-surface-container-high/60 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary">upload_file</span>
+          <h3 class="text-sm font-bold text-on-surface">Import Akun Murid dari Excel / CSV</h3>
+        </div>
+        <button type="button" class="text-outline hover:text-on-surface" onclick="document.getElementById('modal-import-students').classList.add('hidden')">
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
+
+      <!-- Step 1: Download Template -->
+      <div class="p-3 rounded-xl bg-surface-container-low flex items-center justify-between gap-3 text-xs">
+        <div>
+          <span class="font-bold text-on-surface">Langkah 1:</span> Unduh template Excel terstandarisasi.
+        </div>
+        <button type="button" class="px-3 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-primary font-bold shadow-sm transition-colors" onclick="window.XlsxHelper.downloadStudentTemplate()">
+          Unduh Template XLSX
+        </button>
+      </div>
+
+      <!-- Step 2: Upload File -->
+      <div class="flex flex-col gap-2">
+        <span class="text-xs font-bold text-on-surface">Langkah 2: Unggah Berkas Spreadsheet (.XLSX atau .CSV)</span>
+        <input type="file" id="import-file-input" accept=".xlsx, .xls, .csv" class="block w-full text-xs text-on-surface file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-white hover:file:bg-primary-container cursor-pointer bg-surface-container-low p-2 rounded-xl border border-surface-container-high" onchange="app.handleImportFileSelected(event)"/>
+      </div>
+
+      <!-- Step 3: Preview Area (Appears after file selected) -->
+      <div id="import-preview-area" class="hidden flex flex-col gap-3 pt-2 border-t border-surface-container-high">
+        <span class="text-xs font-bold text-on-surface">Langkah 3: Pratinjau & Validasi Data</span>
+        
+        <div class="grid grid-cols-3 gap-2 text-center text-xs">
+          <div class="p-2.5 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200">
+            <span class="text-base font-bold tabular-nums" id="import-stat-valid">0</span>
+            <div class="text-[10px] font-semibold">Baris Valid</div>
+          </div>
+          <div class="p-2.5 rounded-xl bg-amber-50 text-amber-800 border border-amber-200">
+            <span class="text-base font-bold tabular-nums" id="import-stat-duplicate">0</span>
+            <div class="text-[10px] font-semibold">Duplikat (Username)</div>
+          </div>
+          <div class="p-2.5 rounded-xl bg-rose-50 text-rose-800 border border-rose-200">
+            <span class="text-base font-bold tabular-nums" id="import-stat-error">0</span>
+            <div class="text-[10px] font-semibold">Galat Format</div>
+          </div>
+        </div>
+
+        <div id="import-error-list" class="hidden p-3 rounded-xl bg-error-container text-on-error-container text-xs">
+        </div>
+
+        <!-- Options: Duplicate handling & Auto create class -->
+        <div class="flex flex-col gap-2 pt-2">
+          <span class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Perlakuan Data Duplikat:</span>
+          <div class="flex items-center gap-4 text-xs">
+            <label class="flex items-center gap-1.5 cursor-pointer">
+              <input type="radio" name="import-duplicate-action" value="skip" checked class="text-primary focus:ring-primary"/>
+              <span>Lewati (Jangan Timpa)</span>
+            </label>
+            <label class="flex items-center gap-1.5 cursor-pointer">
+              <input type="radio" name="import-duplicate-action" value="update" class="text-primary focus:ring-primary"/>
+              <span>Perbarui Data Lama</span>
+            </label>
+          </div>
+
+          <label class="flex items-center gap-2 mt-1 text-xs cursor-pointer">
+            <input type="checkbox" id="import-auto-create-class" checked class="rounded text-primary focus:ring-primary w-4 h-4"/>
+            <span>Otomatis buat kelas baru jika nama kelas belum terdaftar di sistem.</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end gap-2 pt-2 border-t border-surface-container-high/60">
+        <button type="button" class="px-4 py-2 rounded-xl text-xs font-semibold text-outline hover:bg-surface-container" onclick="document.getElementById('modal-import-students').classList.add('hidden')">Batal</button>
+        <button type="button" id="import-confirm-btn" class="hidden px-5 py-2 rounded-xl bg-primary text-white text-xs font-bold shadow-sm hover:bg-primary-container" onclick="app.executeStudentImport()">
+          Proses & Masukkan Data
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Restore System from Backup (RPD Section 6) -->
+  <div id="modal-restore" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 modal-backdrop-close">
+    <div class="w-full max-w-md bg-surface-container-lowest rounded-2xl p-space-lg shadow-2xl border border-surface-container-high/60 modal-content-enter flex flex-col gap-3">
+      <div class="flex items-center justify-between border-b border-surface-container-high/60 pb-3">
+        <h3 class="text-sm font-bold text-on-surface">Restore Data dari Cadangan (.JSON)</h3>
+        <button type="button" class="text-outline hover:text-on-surface" onclick="document.getElementById('modal-restore').classList.add('hidden')">
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
+
+      <p class="text-xs text-secondary leading-relaxed">
+        Pilih berkas cadangan JSON. Sistem akan otomatis membuat snapshot cadangan pengaman terlebih dahulu sebelum proses restore dijalankan.
+      </p>
+
+      <input type="file" id="restore-file-input" accept=".json" class="block w-full text-xs p-2 rounded-xl bg-surface-container-low border border-surface-container-high cursor-pointer" onchange="app.handleRestoreFileSelected(event)"/>
+
+      <div id="restore-preview-stats" class="hidden p-3 rounded-xl bg-surface-container-low text-xs flex flex-col gap-1">
+        <span class="font-bold text-primary">Pratinjau Muatan Berkas:</span>
+        <div>Kelas: <span id="restore-preview-classes" class="font-bold">0</span> rombel</div>
+        <div>Akun Murid: <span id="restore-preview-students" class="font-bold">0</span> murid</div>
+        <div>Instrumen Tugas: <span id="restore-preview-tasks" class="font-bold">0</span> tugas</div>
+      </div>
+
+      <div class="flex flex-col gap-1.5 pt-1">
+        <span class="text-xs font-bold text-outline uppercase tracking-wider">Mode Pemulihan Data:</span>
+        <div class="flex items-center gap-4 text-xs">
+          <label class="flex items-center gap-1.5 cursor-pointer">
+            <input type="radio" name="restore-mode" value="replace" checked class="text-primary focus:ring-primary"/>
+            <span>Ganti Semua Data</span>
+          </label>
+          <label class="flex items-center gap-1.5 cursor-pointer">
+            <input type="radio" name="restore-mode" value="merge" class="text-primary focus:ring-primary"/>
+            <span>Gabung (Tanpa Duplikat)</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-1 pt-1">
+        <label for="restore-admin-pass" class="text-xs font-bold text-outline uppercase tracking-wider">Konfirmasi Kata Sandi Admin *</label>
+        <input type="password" id="restore-admin-pass" placeholder="Ketik sandi akun admin Anda..." class="h-10 px-3 rounded-xl bg-surface-container-low text-xs border border-surface-container-high focus:outline-none" required/>
+      </div>
+
+      <div class="flex items-center justify-end gap-2 pt-2 border-t border-surface-container-high/60">
+        <button type="button" class="px-4 py-2 rounded-xl text-xs font-semibold text-outline hover:bg-surface-container" onclick="document.getElementById('modal-restore').classList.add('hidden')">Batal</button>
+        <button type="button" id="restore-confirm-btn" class="hidden px-5 py-2 rounded-xl bg-error text-white text-xs font-bold shadow-sm hover:opacity-90" onclick="app.executeRestore()">
+          Konfirmasi & Pulihkan Data
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       INTERACTIVE TOAST NOTIFICATION
+       ========================================================================= -->
+  <div id="toastNotification" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-space-sm px-4 py-3 bg-surface-container-lowest text-on-surface rounded-2xl shadow-xl border border-surface-container-high">
+    <span class="material-symbols-outlined text-primary text-2xl" id="toastIcon">check_circle</span>
+    <div class="flex flex-col">
+      <span class="text-xs font-bold text-on-surface" id="toastTitle">Berhasil Disimpan</span>
+      <span class="text-xs text-on-surface-variant" id="toastMessage">Konfigurasi telah diperbarui.</span>
+    </div>
+  </div>
+
+  <!-- Application Modules -->
+  <script src="js/config.js"></script>
+  <script src="js/crypto-utils.js"></script>
+  <script src="js/github-backend.js"></script>
+  <script src="js/image-compressor.js"></script>
+  <script src="js/xlsx-helper.js"></script>
+  <script src="js/audit.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
