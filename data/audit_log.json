@@ -1,5 +1,14 @@
 [
   {
+    "id": "aud_1792560843664_tqc5",
+    "timestamp": "2026-10-21T05:34:03.664Z",
+    "user": "admin",
+    "role": "admin",
+    "action": "TOGGLE_LOCK_TUGAS",
+    "details": "Mengubah status tugas \"Tugas Report Text\" menjadi dikunci",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)"
+  },
+  {
     "id": "aud_1792560727614_ivmh",
     "timestamp": "2026-10-21T05:32:07.614Z",
     "user": "admin",
