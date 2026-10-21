@@ -6,13 +6,14 @@
   "jenjang": "Madrasah Tsanawiyah (MTs)",
   "akreditasi": "A (Unggul)",
   "nsm_npsn": "121233730001 / 20363210",
-  "alamat": "Jl. Pendidikan Karakter No. 12, Semarang, Jawa Tengah",
-  "kepala_madrasah": "Drs. H. Miftah Faridl, M.Ag",
-  "nip_kepala": "197203151998031002",
-  "guru_pengampu": "Ust. Ahmad Fauzi, S.Pd.I",
+  "alamat": "Jln. Raya Wanakerta No 28 Desa Wanakerta, Kecamatan Cibatu, Kabupaten Garut",
+  "kepala_madrasah": "H. Asep Sodikin, S.Pd., M.M.",
+  "nip_kepala": "197305071997031002",
+  "guru_pengampu": "Raden Mohammad Rizki Septiana, S.Hum.",
   "nip_guru": "198507202010011015",
   "kontak_admin": "admin@mtsn1model.sch.id",
   "kkm_nasional": 75,
   "version": "2.0",
-  "created_at": "2026-10-21T04:49:30.834Z"
+  "created_at": "2026-10-21T04:49:30.834Z",
+  "updated_at": "2026-10-21T04:51:54.073Z"
 }
