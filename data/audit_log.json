@@ -1,5 +1,50 @@
 [
   {
+    "id": "aud_1792561059947_nje3",
+    "timestamp": "2026-10-21T05:37:39.947Z",
+    "user": "admin",
+    "role": "admin",
+    "action": "LOGOUT",
+    "details": "Pengguna keluar: admin",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)"
+  },
+  {
+    "id": "aud_1792560895203_ay8i",
+    "timestamp": "2026-10-21T05:34:55.203Z",
+    "user": "admin",
+    "role": "admin",
+    "action": "CHANGE_PASSWORD",
+    "details": "Perubahan kata sandi untuk akun: admin",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)"
+  },
+  {
+    "id": "aud_1792560895199_u7nf",
+    "timestamp": "2026-10-21T05:34:55.199Z",
+    "user": "admin",
+    "role": "admin",
+    "action": "UPDATE_STUDENT",
+    "details": "Memperbarui akun murid: Administrator Madrasah",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)"
+  },
+  {
+    "id": "aud_1792560870097_lzwb",
+    "timestamp": "2026-10-21T05:34:30.097Z",
+    "user": "admin",
+    "role": "admin",
+    "action": "UPDATE_TUGAS",
+    "details": "Memperbarui tugas: \"Tugas Report Text\"",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)"
+  },
+  {
+    "id": "aud_1792560845798_mfnm",
+    "timestamp": "2026-10-21T05:34:05.798Z",
+    "user": "admin",
+    "role": "admin",
+    "action": "TOGGLE_LOCK_TUGAS",
+    "details": "Mengubah status tugas \"Tugas Report Text\" menjadi aktif",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)"
+  },
+  {
     "id": "aud_1792560843664_tqc5",
     "timestamp": "2026-10-21T05:34:03.664Z",
     "user": "admin",
